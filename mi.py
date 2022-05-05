@@ -175,7 +175,7 @@ def get_data(media_info):
 
     return parsed_file
 
-def print_mediainfo_dict(file_dict):
+def print_mediainfo_dict(file_dict,errors_flag):
     output_f = output_v = output_s = ""
     output_a = {}
     # file name
@@ -224,6 +224,8 @@ def print_mediainfo_dict(file_dict):
             else: output_s += ", "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"
     
     # print all
+    if( errors_flag and ( ("?" not in output_v) and ("?" not in output_a.values()) and ("?" not in output_s) ) ): return # error mode: jump file if it has errors
+
     print("") #formatting line
     print(output_f)
     print(Fore.CYAN+"Video: "+Fore.RESET + output_v)
@@ -236,11 +238,12 @@ def main():
     # Commandline input
     parser = argparse.ArgumentParser(description='Print mediainfo output in a compact way')
     parser.add_argument('path', type=str, nargs=1, help='The folder or file path')
-
+    parser.add_argument('-e', '--errors', help='Show only files with errors in tags', action='store_true')
     args = parser.parse_args()
 
     # Variable migration
     path = args.path[0]
+    errors_flag = args.errors
 
     # Load file/s & print info
     if os.path.isdir(path):     # -------- DIRECTORY --------
@@ -251,13 +254,13 @@ def main():
             # Parse info
             media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
             file_dict = get_data(media_info_output)
-            print_mediainfo_dict(file_dict)
+            print_mediainfo_dict(file_dict, errors_flag)
             
     else:                       # -------- SINGLE FILE --------
             # Parse info
             media_info_output = json.loads(MediaInfo.parse(path,output="JSON"))
             file_dict = get_data(media_info_output)
-            print_mediainfo_dict(file_dict)
+            print_mediainfo_dict(file_dict, errors_flag)
 
 
 if __name__ == "__main__":
