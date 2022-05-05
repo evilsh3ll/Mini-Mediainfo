@@ -14,6 +14,11 @@ def load_files(my_dir):
             continue
     return all_files
 
+def convert_b2_to_b10(size_b2):
+    if("KiB" in size_b2): return str(round(float(size_b2.replace("KiB",""))*(1.024),1)) + "KB"
+    if("MiB" in size_b2): return str(round(float(size_b2.replace("MiB",""))*(1.048576),1)) + "MB"
+    if("GiB" in size_b2): return str(round(float(size_b2.replace("GiB",""))*(1.073741824),1)) + "GB"
+
 def minimize_channels(channels):
     if channels == "C":                         return "1.0"
     if channels == "Lt Rt":                     return "2.0"
@@ -87,7 +92,7 @@ def get_data(media_info):
 
         # General Parsing
         if curr_track["@type"] == "General":
-            parsed_file["Size"] = curr_track["FileSize_String"].replace("GiB","Gb").replace("MiB","Mb").replace("KiB","Kb").replace(" ","")
+            parsed_file["Size"] = convert_b2_to_b10(curr_track["FileSize_String"].replace(" ",""))
             parsed_file["Path"] = curr_track["FolderName"]
             parsed_file["File"] = curr_track["FileNameExtension"]
             continue
@@ -109,7 +114,7 @@ def get_data(media_info):
                     if(("bitrate=" in field) and (v_encode_param=="?")): v_encode_param=field.split("bitrate=")[1].strip().replace("000","")
             if("/" in v_encode_param): v_encode_param = v_encode_param.split("/")[0] # clean ZONED crf
             if("InternetMediaType" in curr_track): v_codec = curr_track["InternetMediaType"].replace("video/","")
-            if("StreamSize_String3" in curr_track): v_size = curr_track["StreamSize_String3"].replace("GiB","Gb").replace("MiB","Mb").replace("KiB","Kb").replace(" ","")
+            if("StreamSize_String3" in curr_track): v_size = convert_b2_to_b10(curr_track["StreamSize_String3"].replace(" ",""))
 
             parsed_file["Video"] = {
                 "Resolution" : v_resolution,
@@ -133,7 +138,7 @@ def get_data(media_info):
             if("Format_Commercial" in curr_track): a_codec = minimize_a_codec(curr_track["Format_Commercial"])
             if("ChannelLayout" in curr_track): a_channels = minimize_channels(curr_track["ChannelLayout"])
             if("BitRate_String" in curr_track): a_bitrate = curr_track["BitRate_String"].replace(" ","")
-            if("StreamSize_String3" in curr_track): a_size = curr_track["StreamSize_String3"].replace("GiB","Gb").replace("MiB","Mb").replace("KiB","Kb").replace(" ","")
+            if("StreamSize_String3" in curr_track): a_size = convert_b2_to_b10(curr_track["StreamSize_String3"].replace(" ",""))
 
             curr_audio_dict = {
                 "Language" : a_lang,
