@@ -14,13 +14,13 @@ A basic mediainfo wrapper with minimalistic output. A simple tool for muxers and
 
 ## Screenshots
 
-Single File:
+Files/Folder Scan:
 
-![file](https://i.postimg.cc/DZ8kxg6Z/file.png)
+![screen](https://i.postimg.cc/Z55cvKL8/Senzanome.png)
 
-Folder:
+Muxing Errors Example:
 
-![folder](https://i.postimg.cc/63gsgvbh/folder.png)
+![screen](https://i.postimg.cc/rp78BsmM/errors.png)
 
 ## Installation
 
@@ -30,6 +30,7 @@ Folder:
 
 - [ ] Add a full mediainfo output fallback
 - [ ] Add a function to save output in a textfile (json/text)
+- [ ] Make it multiplatform
 
 ## Contributors
 

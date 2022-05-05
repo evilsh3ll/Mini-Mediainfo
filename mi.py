@@ -75,7 +75,7 @@ def get_data(media_info):
     parsed_file = {
         "Path" : "?",
         "File" : "?",
-        "Size" : 0,
+        "Size" : "?",
         "Video" : {},
         "Audio" : [],
         "Subs" : [],
@@ -178,7 +178,7 @@ def print_mediainfo_dict(file_dict):
     output_f = output_v = output_s = ""
     output_a = {}
     # file name
-    output_f = Fore.GREEN + "-> "+ file_dict["File"] + " ["+ file_dict["Size"] + "Gb]"+ Fore.RESET
+    output_f = Fore.GREEN + "-> "+ file_dict["File"] + " ["+ file_dict["Size"] + "]"+ Fore.RESET
 
     # video info
     output_v = file_dict["Video"]["Resolution"]+" "+file_dict["Video"]["Duration"]
@@ -205,6 +205,16 @@ def print_mediainfo_dict(file_dict):
 
     # subs info
     for curr_sub in file_dict["Subs"]:
+        if curr_sub["Language"]=="?": # sub with error in language
+            if curr_sub["Forced"]==True: 
+                if output_s=="": output_s += Style.BRIGHT + Fore.RED +"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET + Style.RESET_ALL
+                else: output_s += Style.BRIGHT + Fore.RED +", [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET + Style.RESET_ALL
+            else:
+                if output_s=="": output_s +=  Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET
+                else: output_s += ", " + Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET
+            continue
+            
+        # sub without errors
         if curr_sub["Forced"]==True: 
             if output_s=="": output_s += Style.BRIGHT+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL
             else: output_s += Style.BRIGHT+", [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL
@@ -217,7 +227,8 @@ def print_mediainfo_dict(file_dict):
     print(output_f)
     print(Fore.CYAN+"Video: "+Fore.RESET + output_v)
     for key_lang in output_a:
-        print(Fore.CYAN+"Audio " + key_lang + ": "+Fore.RESET + output_a[key_lang])
+        if key_lang=="?": print(Fore.RED+"Audio " + key_lang + ": "+Fore.RESET + output_a[key_lang])
+        else: print(Fore.CYAN+"Audio " + key_lang + ": "+Fore.RESET + output_a[key_lang])
     print(Fore.CYAN+"Subs: "+Fore.RESET + output_s)
 
 def main():
