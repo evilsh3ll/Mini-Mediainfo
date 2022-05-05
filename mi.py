@@ -76,7 +76,7 @@ def minimize_s_codec(codec):
     if codec == "S_TEXT/WEBVTT":    return "vtt"
     return codec
 
-def get_data(media_info):
+def get_data(path,media_info):
     parsed_file = {
         "Path" : "?",
         "File" : "?",
@@ -93,7 +93,7 @@ def get_data(media_info):
         # General Parsing
         if curr_track["@type"] == "General":
             parsed_file["Size"] = convert_b2_to_b10(curr_track["FileSize_String"].replace(" ",""))
-            parsed_file["Path"] = curr_track["FolderName"]
+            parsed_file["Path"] = path
             parsed_file["File"] = curr_track["FileNameExtension"]
             continue
             
@@ -258,13 +258,13 @@ def main():
         for curr_file in files:
             # Parse info
             media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
-            file_dict = get_data(media_info_output)
+            file_dict = get_data(os.path.abspath(path+curr_file),media_info_output)
             print_mediainfo_dict(file_dict, errors_flag)
             
     else:                       # -------- SINGLE FILE --------
             # Parse info
             media_info_output = json.loads(MediaInfo.parse(path,output="JSON"))
-            file_dict = get_data(media_info_output)
+            file_dict = get_data(os.path.abspath(path),media_info_output)
             print_mediainfo_dict(file_dict, errors_flag)
 
 
