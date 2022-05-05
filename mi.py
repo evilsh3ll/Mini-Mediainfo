@@ -104,9 +104,10 @@ def get_data(media_info):
             if("BitRate_String" in curr_track): v_bitrate = curr_track["BitRate_String"].replace(" ","")
             if("Encoded_Library_Settings" in curr_track):
                 for field in curr_track["Encoded_Library_Settings"].split(" / "):
-                    if "rc=" in field: v_encode_method=field.split("rc=")[1].strip()
-                    if "crf=" in field: v_encode_param=field.split("crf=")[1].strip().replace("000","")
-                    if "bitrate=" in field: v_encode_param=field.split("bitrate=")[1].strip().replace("000","")
+                    if(("rc=" in field) and (v_encode_method=="?")): v_encode_method=field.split("rc=")[1].strip()
+                    if(("crf=" in field) and (v_encode_param=="?")): v_encode_param=field.split("crf=")[1].strip().replace("000","")
+                    if(("bitrate=" in field) and (v_encode_param=="?")): v_encode_param=field.split("bitrate=")[1].strip().replace("000","")
+            if("/" in v_encode_param): v_encode_param = v_encode_param.split("/")[0] # clean ZONED crf
             if("InternetMediaType" in curr_track): v_codec = curr_track["InternetMediaType"].replace("video/","")
             if("StreamSize_String3" in curr_track): v_size = curr_track["StreamSize_String3"].replace("GiB","Gb").replace("MiB","Mb").replace("KiB","Kb").replace(" ","")
 
