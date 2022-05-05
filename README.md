@@ -1,30 +1,30 @@
-# Mini Mediainfo (mi) 🎞
+# Mini Mediainfo (mi)
 
 ## Description
 
 A basic mediainfo wrapper with minimalistic output. A simple tool for muxers and encoders, based on [pymediainfo](https://pymediainfo.readthedocs.io/en/stable/pymediainfo.html) wrapper.
 
+## Usage
+
+`mi.py --help` show help message
+
+`mi.py <file>` print output for a single file
+
+`mi.py <folder>` print output for all files in the folder
+
 ## Screenshots
 
-_Single File:_
+Single File:
 
-![file](https://i.postimg.cc/njbPzq6b/image.png)
+![file](https://i.postimg.cc/DZ8kxg6Z/file.png)
 
-_Folder:_
+Folder:
 
-![folder](https://i.postimg.cc/KkPsgR2K/image.png)
+![folder](https://i.postimg.cc/63gsgvbh/folder.png)
 
 ## Installation
 
 ..work in progress..
-
-## Usage
-
-**mi.py --help** show help message
-
-**mi.py \<file\>** print output for a single file
-
-**mi.py \<folder\>** print output for all files in the folder
 
 ## Todo
 
