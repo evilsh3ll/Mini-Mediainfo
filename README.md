@@ -26,11 +26,18 @@ Muxing Errors Example:
 
 ## Installation
 
-..work in progress..
+**dependences**:
+
+- mediainfo > 22.0
+- pymediainfo > 5.1.0
+- colorama > 0.4.4
+
+_..work in progress.._
 
 ## Todo
 
 - [x] Add a function to show only files with errors
+- [ ] Add a debug mode
 - [ ] Add a full mediainfo output fallback
 - [ ] Add a function to save output in a textfile (json/text)
 - [ ] Make it multiplatform
