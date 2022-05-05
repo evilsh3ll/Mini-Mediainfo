@@ -14,15 +14,9 @@ A basic mediainfo wrapper with minimalistic output. A simple tool for muxers and
 
 `mi.py <folder>` print output for all files in the folder
 
-## Screenshots
+## Screenshot
 
-Files/Folder Scan:
-
-![screen](https://i.postimg.cc/Z55cvKL8/Senzanome.png)
-
-Muxing Errors Example:
-
-![screen](https://i.postimg.cc/rp78BsmM/errors.png)
+![screen](https://i.postimg.cc/0QbgKHSn/image.png)
 
 ## Installation
 
