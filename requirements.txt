@@ -1,0 +1,2 @@
+colorama==0.4.4
+pymediainfo==5.1.0
