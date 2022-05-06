@@ -110,8 +110,8 @@ def get_data(path,media_info):
             if("Encoded_Library_Settings" in curr_track):
                 for field in curr_track["Encoded_Library_Settings"].split(" / "):
                     if(("rc=" in field) and (v_encode_method=="?")): v_encode_method=field.split("rc=")[1].strip()
-                    if(("crf=" in field) and (v_encode_param=="?")): v_encode_param=field.split("crf=")[1].strip().replace("000","")
-                    if(("bitrate=" in field) and (v_encode_param=="?")): v_encode_param=field.split("bitrate=")[1].strip().replace("000","")
+                    if(("crf=" in field) and (v_encode_param=="?")): v_encode_param=field.split("crf=")[1].strip()
+                    if(("bitrate=" in field) and (v_encode_param=="?")): v_encode_param=field.split("bitrate=")[1].strip()
             if("/" in v_encode_param): v_encode_param = v_encode_param.split("/")[0] # clean ZONED crf
             if("InternetMediaType" in curr_track): v_codec = curr_track["InternetMediaType"].replace("video/","")
             if("StreamSize_String3" in curr_track): v_size = convert_b2_to_b10(curr_track["StreamSize_String3"].replace(" ",""))
