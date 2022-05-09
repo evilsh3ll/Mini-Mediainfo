@@ -181,11 +181,16 @@ def get_data(path,media_info):
 
     return parsed_file
 
-def print_mediainfo_dict(file_dict,errors_flag):
+def print_mediainfo_dict(file_dict,errors_flag,printnames_flag):
     output_f = output_v = output_s = ""
     output_a = {}
     # file name
     output_f = Fore.GREEN + "-> "+ file_dict["File"] + " ["+ file_dict["Size"] + "]"+ Fore.RESET
+
+    # check: print only names
+    if (printnames_flag == True): 
+            print(output_f)
+            return
 
     # video info
     output_v = file_dict["Video"]["Resolution"]+" "+file_dict["Video"]["Duration"]
@@ -245,11 +250,13 @@ def main():
     parser = argparse.ArgumentParser(description='Print mediainfo output in a compact way')
     parser.add_argument('path', type=str, nargs=1, help='The folder or file path')
     parser.add_argument('-e', '--errors', help='Show only files with errors in tags', action='store_true')
+    parser.add_argument('-pn', '--printnames', help='Print only filenames', action='store_true')
     args = parser.parse_args()
 
     # Variable migration
     path = args.path[0]
     errors_flag = args.errors
+    printnames_flag = args.printnames
 
     # Load file/s & print info
     if os.path.isdir(path):     # -------- DIRECTORY --------
@@ -260,13 +267,13 @@ def main():
             # Parse info
             media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
             file_dict = get_data(os.path.abspath(path+curr_file),media_info_output)
-            print_mediainfo_dict(file_dict, errors_flag)
+            print_mediainfo_dict(file_dict, errors_flag,printnames_flag)
             
     else:                       # -------- SINGLE FILE --------
             # Parse info
             media_info_output = json.loads(MediaInfo.parse(path,output="JSON"))
             file_dict = get_data(os.path.abspath(path),media_info_output)
-            print_mediainfo_dict(file_dict, errors_flag)
+            print_mediainfo_dict(file_dict, errors_flag,printnames_flag)
 
 
 if __name__ == "__main__":
