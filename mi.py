@@ -5,15 +5,16 @@ import argparse
 from pymediainfo import MediaInfo # https://pymediainfo.readthedocs.io/en/stable/pymediainfo.html
 from colorama import Fore,Back,Style
 
-def load_files(my_dir):
-    ext = ('.mkv','.mp4')
+def get_files(path):
+    ext = ('.mkv','.mp4','.avi')
     all_files = []
-    for curr_file in os.listdir(my_dir):
+    all_folders = []
+    for curr_file in os.listdir(path):
         if curr_file.endswith(ext):
             all_files.append(curr_file)
-        else:
-            continue
-    return all_files
+        if os.path.isdir(path+curr_file):
+            all_folders.append(curr_file)
+    return all_files,all_folders
 
 def convert_b2_to_b10(size_b2):
     if("KiB" in size_b2): return str(round(float(size_b2.replace("KiB",""))*(1.024),1)) + "KB"
@@ -245,29 +246,42 @@ def print_mediainfo_dict(file_dict,errors_flag,printnames_flag):
         else: print(Fore.CYAN+"Audio " + key_lang + ": "+Fore.RESET + output_a[key_lang])
     print(Fore.CYAN+"Subs: "+Fore.RESET + output_s)
 
+def parse_all_files(path,errors_flag,printnames_flag,recursive_flag):
+    if path[-1] != "/": path = path + "/" #fix path
+    files,folders = get_files(path) #load files and folders
+    files = sorted(files, key=str.lower) #sort files list
+    folders = sorted(folders, key=str.lower) #sort folders list
+
+    for curr_file in files:
+        # Parse info
+        media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
+        file_dict = get_data(os.path.abspath(path+curr_file),media_info_output)
+        print_mediainfo_dict(file_dict, errors_flag,printnames_flag)
+
+    if(recursive_flag):
+        for curr_folder in folders:
+            print("")
+            print(Fore.MAGENTA + path + curr_folder +"/" + Fore.RESET)
+            parse_all_files(path+curr_folder,errors_flag,printnames_flag,recursive_flag)
+
 def main():
     # Commandline input
     parser = argparse.ArgumentParser(description='Print mediainfo output in a compact way')
     parser.add_argument('path', type=str, nargs=1, help='The folder or file path')
+    parser.add_argument('-r', '--recursive', help='Parse all foders recursively without depth limit', action='store_true')
     parser.add_argument('-e', '--errors', help='Show only files with errors in tags', action='store_true')
     parser.add_argument('-pn', '--printnames', help='Print only filenames', action='store_true')
     args = parser.parse_args()
 
     # Variable migration
-    path = args.path[0]
+    path = os.path.abspath(args.path[0])
     errors_flag = args.errors
     printnames_flag = args.printnames
+    recursive_flag = args.recursive
 
     # Load file/s & print info
     if os.path.isdir(path):     # -------- DIRECTORY --------
-        if path[-1] != "/": path = path + "/" #fix path
-        files = sorted(load_files(path), key=str.lower) #load file list
-
-        for curr_file in files:
-            # Parse info
-            media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
-            file_dict = get_data(os.path.abspath(path+curr_file),media_info_output)
-            print_mediainfo_dict(file_dict, errors_flag,printnames_flag)
+        parse_all_files(path,errors_flag,printnames_flag,recursive_flag)
             
     else:                       # -------- SINGLE FILE --------
             # Parse info

@@ -10,6 +10,8 @@ A basic mediainfo wrapper with minimalistic output. A simple tool for muxers and
 
 `mi.py -e -pn <file/folder>` show only the name of files with errors in tags
 
+`mi.py -r <folder>` print output for all files in the folder and recursively all folders without depth limit
+
 `mi.py <file/folder>` print output for a single file or all files in the folder
 
 ## Screenshot
