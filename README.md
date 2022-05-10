@@ -4,15 +4,20 @@ A basic mediainfo wrapper with minimalistic output. A simple tool for muxers and
 
 ## Usage
 
-`mi.py --help` show help message
+```
+usage: mi.py [-h] [-r] [-e] [-pn] path
 
-`mi.py -e <file/folder>` show only files with errors in tags
+Print mediainfo output in a compact way
 
-`mi.py -e -pn <file/folder>` show only the name of files with errors in tags
+positional arguments:
+path The folder or file path
 
-`mi.py -r <folder>` print output for all files in the folder and recursively all folders without depth limit
-
-`mi.py <file/folder>` print output for a single file or all files in the folder
+options:
+-h, --help show this help message and exit
+-r, --recursive Parse all foders recursively without depth limit
+-e, --errors Show only files with errors in tags
+-pn, --printnames Print only filenames
+```
 
 ## Screenshot
 
@@ -44,3 +49,7 @@ Beta
 ## License
 
 GNU GPLv3
+
+```
+
+```
