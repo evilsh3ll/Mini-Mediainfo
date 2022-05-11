@@ -238,13 +238,21 @@ def print_mediainfo_dict(file_dict,errors_flag,printnames_flag):
     # print all
     if( errors_flag and ( ("?" not in output_v) and ("?" not in output_a.values()) and ("?" not in output_s) ) ): return # error mode: jump file if it has errors
 
-    print("") #formatting line
+    print("") 
+    # FILE OUTPUT
     print(output_f)
+    # VIDEO OUTPUT
     print(Fore.CYAN+"Video: "+Fore.RESET + output_v)
-    for key_lang in output_a:
-        if key_lang=="?": print(Fore.RED+"Audio " + key_lang + ": "+Fore.RESET + output_a[key_lang])
-        else: print(Fore.CYAN+"Audio " + key_lang + ": "+Fore.RESET + output_a[key_lang])
-    print(Fore.CYAN+"Subs: "+Fore.RESET + output_s)
+    # AUDIO OUTPUT
+    if output_a == {}:
+        print(Fore.CYAN+"Audio: Empty"+Fore.RESET)
+    else:
+        for key_lang in output_a:
+            if key_lang=="?": print(Fore.RED+"Audio " + key_lang + ": "+Fore.RESET + output_a[key_lang])
+            else: print(Fore.CYAN+"Audio " + key_lang + ": "+Fore.RESET + output_a[key_lang])
+    # SUBS OUTPUT
+    if output_s == "": print(Fore.CYAN+"Subs: Empty"+Fore.RESET)
+    else: print(Fore.CYAN+"Subs: "+Fore.RESET + output_s)
 
 def parse_all_files(path,errors_flag,printnames_flag,recursive_flag):
     if path[-1] != "/": path = path + "/" #fix path
