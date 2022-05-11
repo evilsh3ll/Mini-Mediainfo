@@ -5,23 +5,25 @@ A basic mediainfo wrapper with minimalistic output. A simple tool for muxers and
 ## Usage
 
 ```
-usage: mi.py [-h] [-r] [-e] [-pn] path
+usage: mi.py [-h] [-r] [-ef] [-af {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}] [-pn] path
 
 Print mediainfo output in a compact way
 
 positional arguments:
-path The folder or file path
+  path                  The folder or file path
 
 options:
--h, --help show this help message and exit
--r, --recursive Parse all foders recursively without depth limit
--e, --errors Show only files with errors in tags
--pn, --printnames Print only filenames
+  -h, --help            show this help message and exit
+  -r, --recursive       Parse all foders recursively without depth limit
+  -ef, --errors_filter  Show only files with errors in tags
+  -af {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}, --audio_filter {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}
+                        Show only files with specific audio
+  -pn, --printnames     Print only filenames
 ```
 
 ## Screenshot
 
-![screen](https://i.postimg.cc/CdytnTgR/image.png)
+![screen](https://i.postimg.cc/0QbgKHSn/image.png)
 
 ## Installation
 
