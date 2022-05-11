@@ -38,20 +38,9 @@ Copy `mi.py` inside `~/.local/bin` and you will be able to run it on any termina
 ## Todo
 
 - [x] Add a function to show only files with errors
-- [ ] Add a function to filter files with specific problems
+- [x] Add a function to filter files for codec
+- [ ] Add a function to filter files for specific problems
 - [ ] Add a function to save output in a textfile (json/text)
 - [ ] Add a function to print the full mediainfo output (fallback)
 - [ ] Add a debug mode
 - [ ] Make it multiplatform
-
-## Status
-
-Beta
-
-## License
-
-GNU GPLv3
-
-```
-
-```
