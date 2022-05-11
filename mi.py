@@ -182,7 +182,7 @@ def get_data(path,media_info):
 
     return parsed_file
 
-def print_mediainfo_dict(file_dict,errors_flag,printnames_flag):
+def print_mediainfo_dict(file_dict,errors_filter,printnames_flag,audio_filter):
     output_f = output_v = output_s = ""
     output_a = {}
     # file name
@@ -235,10 +235,12 @@ def print_mediainfo_dict(file_dict,errors_flag,printnames_flag):
             if output_s=="": output_s += curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"
             else: output_s += ", "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"
     
-    # print all
-    if( errors_flag and ( ("?" not in output_v) and ("?" not in output_a.values()) and ("?" not in output_s) ) ): return # error mode: jump file if it has errors
 
-    print("") 
+    # FILTERS
+    if( errors_filter and ( ("?" not in output_v) and ("?" not in output_a.values()) and ("?" not in output_s) ) ): return # error mode: jump file if it has errors
+    if( audio_filter!=None and (not any(curr_audio_dict["Codec"] == audio_filter for curr_audio_dict in file_dict["Audio"] )) ): return # audio filter mode: jump file if it has the audio string
+
+    # PRINT
     # FILE OUTPUT
     print(output_f)
     # VIDEO OUTPUT
@@ -253,8 +255,9 @@ def print_mediainfo_dict(file_dict,errors_flag,printnames_flag):
     # SUBS OUTPUT
     if output_s == "": print(Fore.CYAN+"Subs: Empty"+Fore.RESET)
     else: print(Fore.CYAN+"Subs: "+Fore.RESET + output_s)
+    print("")
 
-def parse_all_files(path,errors_flag,printnames_flag,recursive_flag):
+def parse_all_files(path,errors_filter,printnames_flag,recursive_flag,audio_filter):
     if path[-1] != "/": path = path + "/" #fix path
     files,folders = get_files(path) #load files and folders
     files = sorted(files, key=str.lower) #sort files list
@@ -264,38 +267,45 @@ def parse_all_files(path,errors_flag,printnames_flag,recursive_flag):
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
         file_dict = get_data(os.path.abspath(path+curr_file),media_info_output)
-        print_mediainfo_dict(file_dict, errors_flag,printnames_flag)
+        print_mediainfo_dict(file_dict,errors_filter,printnames_flag,audio_filter)
 
     if(recursive_flag):
         for curr_folder in folders:
             print("")
             print(Fore.MAGENTA + path + curr_folder +"/" + Fore.RESET)
-            parse_all_files(path+curr_folder,errors_flag,printnames_flag,recursive_flag)
+            parse_all_files(path+curr_folder,errors_filter,printnames_flag,recursive_flag,audio_filter)
 
 def main():
     # Commandline input
     parser = argparse.ArgumentParser(description='Print mediainfo output in a compact way')
     parser.add_argument('path', type=str, nargs=1, help='The folder or file path')
     parser.add_argument('-r', '--recursive', help='Parse all foders recursively without depth limit', action='store_true')
-    parser.add_argument('-e', '--errors', help='Show only files with errors in tags', action='store_true')
+    parser.add_argument('-ef', '--errors_filter', help='Show only files with errors in tags', action='store_true')
+    parser.add_argument('-af', '--audio_filter', type=str, help='Show only files with specific audio', choices=['TrueHD','TrueHD-Atmos','DD','DDP','DDP-Atmos','DD-Atmos','DTS','DTS-ES','DTS-HD','DTS-MA','AAC'])
     parser.add_argument('-pn', '--printnames', help='Print only filenames', action='store_true')
     args = parser.parse_args()
 
     # Variable migration
     path = os.path.abspath(args.path[0])
-    errors_flag = args.errors
+    errors_filter = args.errors_filter
+    audio_filter= args.audio_filter
     printnames_flag = args.printnames
     recursive_flag = args.recursive
-
+    
     # Load file/s & print info
     if os.path.isdir(path):     # -------- DIRECTORY --------
-        parse_all_files(path,errors_flag,printnames_flag,recursive_flag)
+        parse_all_files(path,errors_filter,printnames_flag,recursive_flag,audio_filter)
             
     else:                       # -------- SINGLE FILE --------
-            # Parse info
-            media_info_output = json.loads(MediaInfo.parse(path,output="JSON"))
-            file_dict = get_data(os.path.abspath(path),media_info_output)
-            print_mediainfo_dict(file_dict, errors_flag,printnames_flag)
+        # check errors
+        if(errors_filter or audio_filter):
+            print("ERR: Can't filter a single file")
+            return
+
+        # Parse info
+        media_info_output = json.loads(MediaInfo.parse(path,output="JSON"))
+        file_dict = get_data(os.path.abspath(path),media_info_output)
+        print_mediainfo_dict(file_dict,False,printnames_flag,None)
 
 
 if __name__ == "__main__":
