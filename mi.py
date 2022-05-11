@@ -182,7 +182,7 @@ def get_data(path,media_info):
 
     return parsed_file
 
-def print_mediainfo_dict(file_dict,errors_filter,printnames_flag,audio_filter):
+def print_mediainfo_dict(file_dict,errors_filter,printnames_flag,audio_filter,subs_filter):
     output_f = output_v = output_s = ""
     output_a = {}
     # file name
@@ -239,6 +239,7 @@ def print_mediainfo_dict(file_dict,errors_filter,printnames_flag,audio_filter):
     # FILTERS
     if( errors_filter and ( ("?" not in output_v) and ("?" not in output_a.values()) and ("?" not in output_s) ) ): return # error mode: jump file if it has errors
     if( audio_filter!=None and (not any(curr_audio_dict["Codec"] == audio_filter for curr_audio_dict in file_dict["Audio"] )) ): return # audio filter mode: jump file if it has the audio string
+    if( subs_filter!=None and (not any(curr_sub_dict["Codec"] == subs_filter for curr_sub_dict in file_dict["Subs"] )) ): return # subs filter mode: jump file if it has the sub string   
 
     # PRINT
     # FILE OUTPUT
@@ -257,7 +258,7 @@ def print_mediainfo_dict(file_dict,errors_filter,printnames_flag,audio_filter):
     else: print(Fore.CYAN+"Subs: "+Fore.RESET + output_s)
     print("")
 
-def parse_all_files(path,errors_filter,printnames_flag,recursive_flag,audio_filter):
+def parse_all_files(path,errors_filter,printnames_flag,recursive_flag,audio_filter,subs_filter):
     if path[-1] != "/": path = path + "/" #fix path
     files,folders = get_files(path) #load files and folders
     files = sorted(files, key=str.lower) #sort files list
@@ -267,13 +268,13 @@ def parse_all_files(path,errors_filter,printnames_flag,recursive_flag,audio_filt
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
         file_dict = get_data(os.path.abspath(path+curr_file),media_info_output)
-        print_mediainfo_dict(file_dict,errors_filter,printnames_flag,audio_filter)
+        print_mediainfo_dict(file_dict,errors_filter,printnames_flag,audio_filter,subs_filter)
 
     if(recursive_flag):
         for curr_folder in folders:
             print("")
             print(Fore.MAGENTA + path + curr_folder +"/" + Fore.RESET)
-            parse_all_files(path+curr_folder,errors_filter,printnames_flag,recursive_flag,audio_filter)
+            parse_all_files(path+curr_folder,errors_filter,printnames_flag,recursive_flag,audio_filter,subs_filter)
 
 def main():
     # Commandline input
@@ -282,6 +283,7 @@ def main():
     parser.add_argument('-r', '--recursive', help='Parse all foders recursively without depth limit', action='store_true')
     parser.add_argument('-ef', '--errors_filter', help='Show only files with errors in tags', action='store_true')
     parser.add_argument('-af', '--audio_filter', type=str, help='Show only files with specific audio', choices=['TrueHD','TrueHD-Atmos','DD','DDP','DDP-Atmos','DD-Atmos','DTS','DTS-ES','DTS-HD','DTS-MA','AAC'])
+    parser.add_argument('-sf', '--subs_filter', type=str, help='Show only files with specific subs', choices=['vob','srt','sup','ass','vtt'])
     parser.add_argument('-pn', '--printnames', help='Print only filenames', action='store_true')
     args = parser.parse_args()
 
@@ -289,12 +291,13 @@ def main():
     path = os.path.abspath(args.path[0])
     errors_filter = args.errors_filter
     audio_filter= args.audio_filter
+    subs_filter= args.subs_filter
     printnames_flag = args.printnames
     recursive_flag = args.recursive
     
     # Load file/s & print info
     if os.path.isdir(path):     # -------- DIRECTORY --------
-        parse_all_files(path,errors_filter,printnames_flag,recursive_flag,audio_filter)
+        parse_all_files(path,errors_filter,printnames_flag,recursive_flag,audio_filter,subs_filter)
             
     else:                       # -------- SINGLE FILE --------
         # check errors
@@ -305,7 +308,7 @@ def main():
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path,output="JSON"))
         file_dict = get_data(os.path.abspath(path),media_info_output)
-        print_mediainfo_dict(file_dict,False,printnames_flag,None)
+        print_mediainfo_dict(file_dict,False,printnames_flag,None,None)
 
 
 if __name__ == "__main__":
