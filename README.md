@@ -25,7 +25,7 @@ options:
 
 ## Screenshot
 
-![screen](https://i.postimg.cc/0QbgKHSn/image.png)
+![screen](https://i.postimg.cc/9Qvx1ffv/image.png)
 
 ## Installation
 
