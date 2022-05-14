@@ -278,13 +278,13 @@ def print_mediainfo_dict(file_dict,errors_filter,printnames_flag,audio_filter,su
     print(Fore.CYAN+"Video: "+Fore.RESET + output_v)
     # AUDIO OUTPUT
     if output_a == {}:
-        print(Fore.CYAN+"Audio: Empty"+Fore.RESET)
+        print(Fore.CYAN+"Audio: "+Fore.RESET+Style.DIM+"-empty-"+Style.RESET_ALL)
     else:
         for key_lang in output_a:
             if key_lang=="?": print(Fore.RED+"Audio " + key_lang + ": "+Fore.RESET + output_a[key_lang])
             else: print(Fore.CYAN+"Audio " + key_lang + ": "+Fore.RESET + output_a[key_lang])
     # SUBS OUTPUT
-    if output_s == "": print(Fore.CYAN+"Subs: Empty"+Fore.RESET)
+    if output_s == "": print(Fore.CYAN+"Subs: "+Fore.RESET +Style.DIM+"-empty-"+Style.RESET_ALL)
     else: print(Fore.CYAN+"Subs: "+Fore.RESET + output_s)
     print("")
 
