@@ -72,6 +72,7 @@ def minimize_a_codec(codec):
 
 def minimize_s_codec(codec):
     if codec == "S_VOBSUB":         return "vob"
+    if codec == "mp4s-E0":          return "vob"
     if codec == "S_TEXT/UTF8":      return "srt"
     if codec == "S_HDMV/PGS":       return "sup"
     if codec == "S_TEXT/ASS":       return "ass"
