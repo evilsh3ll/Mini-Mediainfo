@@ -317,7 +317,7 @@ def main():
     parser.add_argument('-af', '--audio_filter', type=str, help='Show only files with specific audio', choices=['TrueHD','TrueHD-Atmos','DD','DDP','DDP-Atmos','DD-Atmos','DTS','DTS-ES','DTS-HD','DTS-MA','AAC'])
     parser.add_argument('-sf', '--subs_filter', type=str, help='Show only files with specific subs', choices=['vob','srt','sup','ass','vtt'])
     parser.add_argument('-cf', '--chapters_filter', help='Show only files with chapters', action='store_true')
-    parser.add_argument('-cfn', '--not_chapters_filter', help='Show only files without chapters', action='store_true')
+    parser.add_argument('-cnf', '--not_chapters_filter', help='Show only files without chapters', action='store_true')
     parser.add_argument('-pn', '--printnames', help='Print only filenames', action='store_true')
     args = parser.parse_args()
 
@@ -344,7 +344,7 @@ def main():
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path,output="JSON"))
         file_dict = get_data(os.path.abspath(path),media_info_output)
-        print_mediainfo_dict(file_dict,False,printnames_flag,None,None)
+        print_mediainfo_dict(file_dict,False,printnames_flag,None,None,None,None)
 
 
 if __name__ == "__main__":

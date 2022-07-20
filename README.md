@@ -5,7 +5,7 @@ A basic mediainfo wrapper with minimalistic output. A simple tool for muxers and
 ## Usage
 
 ```
-usage: mi.py [-h] [-r] [-ef] [-af {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}] [-sf {vob,srt,sup,ass,vtt}] [-cf] [-cfn] [-pn] path
+usage: mi.py [-h] [-r] [-ef] [-af {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}] [-sf {vob,srt,sup,ass,vtt}] [-cf] [-cnf] [-pn] path
 
 Print mediainfo output in a compact way
 
@@ -22,7 +22,7 @@ options:
                         Show only files with specific subs
   -cf, --chapters_filter
                         Show only files with chapters
-  -cfn, --not_chapters_filter
+  -cnf, --not_chapters_filter
                         Show only files without chapters
   -pn, --printnames     Print only filenames
 ```
