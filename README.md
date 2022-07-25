@@ -29,7 +29,7 @@ options:
 
 ## Screenshot
 
-![screen](https://i.postimg.cc/9Qvx1ffv/image.png)
+![screen](https://i.postimg.cc/y6F8PZgy/image.png)
 
 ## Installation
 

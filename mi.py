@@ -277,17 +277,17 @@ def print_mediainfo_dict(file_dict,errors_filter,printnames_flag,audio_filter,su
     # FILE OUTPUT
     print(output_f)
     # VIDEO OUTPUT
-    print(Fore.CYAN+"Video: "+Fore.RESET + output_v)
+    print(Fore.CYAN+"VID: "+Fore.RESET + output_v)
     # AUDIO OUTPUT
     if output_a == {}:
-        print(Fore.CYAN+"Audio: "+Fore.RESET+Style.DIM+"-empty-"+Style.RESET_ALL)
+        print(Fore.CYAN+"AUD: "+Fore.RESET+Style.DIM+"-empty-"+Style.RESET_ALL)
     else:
         for key_lang in output_a:
-            if key_lang=="?": print(Fore.RED+"Audio " + key_lang + ": "+Fore.RESET + output_a[key_lang])
-            else: print(Fore.CYAN+"Audio " + key_lang + ": "+Fore.RESET + output_a[key_lang])
+            if key_lang=="?": print(Fore.RED+"AUD " + key_lang + ": "+Fore.RESET + output_a[key_lang])
+            else: print(Fore.CYAN+"AUD " + key_lang + ": "+Fore.RESET + output_a[key_lang])
     # SUBS OUTPUT
-    if output_s == "": print(Fore.CYAN+"Subs: "+Fore.RESET +Style.DIM+"-empty-"+Style.RESET_ALL)
-    else: print(Fore.CYAN+"Subs: "+Fore.RESET + output_s)
+    if output_s == "": print(Fore.CYAN+"SUB: "+Fore.RESET +Style.DIM+"-empty-"+Style.RESET_ALL)
+    else: print(Fore.CYAN+"SUB: "+Fore.RESET + output_s)
     print("")
 
 def parse_all_files(path,errors_filter,printnames_flag,recursive_flag,audio_filter,subs_filter,chapters_filter,not_chapters_filter):
