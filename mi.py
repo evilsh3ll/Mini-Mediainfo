@@ -140,6 +140,7 @@ def get_data(path,media_info):
             if("Language_String3" in curr_track): a_lang = curr_track["Language_String3"].capitalize()
             if("Format_Commercial" in curr_track): a_codec = minimize_a_codec(curr_track["Format_Commercial"])
             if("ChannelLayout" in curr_track): a_channels = minimize_channels(curr_track["ChannelLayout"])
+            if("ChannelLayout_Original" in curr_track): a_channels = minimize_channels(curr_track["ChannelLayout_Original"])
             if("BitRate_String" in curr_track): a_bitrate = curr_track["BitRate_String"].replace(" ","")
             if("Default" in curr_track):
                 if curr_track["Default"] == "Yes" : a_default = True
