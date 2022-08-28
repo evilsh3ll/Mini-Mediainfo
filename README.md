@@ -5,7 +5,7 @@ A basic mediainfo wrapper with minimalistic output. A simple tool for muxers and
 ## Usage
 
 ```
-usage: mi.py [-h] [-r] [-ef] [-af {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}] [-sf {vob,srt,sup,ass,vtt}] [-cf] [-cnf] [-pn] path
+usage: mi.py [-h] [-r] [-ef] [-af {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}] [-sf {vob,srt,sup,ass,vtt}] [-cf] [-cnf] [-pn] [-v] path
 
 Print mediainfo output in a compact way
 
@@ -25,6 +25,7 @@ options:
   -cnf, --not_chapters_filter
                         Show only files without chapters
   -pn, --printnames     Print only filenames
+  -v, --verbose         Fallback to vanilla mediainfo output
 ```
 
 ## Screenshot
@@ -49,7 +50,7 @@ Copy `mi.py` inside `~/.local/bin` and you will be able to run it on any termina
 - [ ] Add a function to filter input file names
 - [ ] Add a function to show track names in output
 - [ ] Add a function to save output in a textfile (json/text)
-- [ ] Add a function to print the full mediainfo output (fallback)
+- [x] Add a function to print the full mediainfo output (fallback)
 - [ ] Add a function to filter input files by name (fallback)
 - [ ] Fix output error when opening files (audio) not matching the video mediainfo output
 - [ ] Implement a minimum settings for encoding (ptp)
