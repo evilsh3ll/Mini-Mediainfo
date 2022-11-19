@@ -102,13 +102,14 @@ def get_data(path,media_info):
             
         # Video parsing
         if curr_track["@type"] == "Video":
-            v_resolution = v_aspectratio = v_duration = v_fps = v_originalfps = v_bitrate = v_encode_method = v_encode_param = v_codec = v_size = "?"
+            v_resolution = v_aspectratio = v_duration = v_fps = v_originalfps = v_profile = v_bitrate = v_encode_method = v_encode_param = v_codec = v_size = "?"
             
             if("Width" in curr_track and "Height" in curr_track): v_resolution = curr_track["Width"]+"x"+curr_track["Height"]
             if("DisplayAspectRatio_String" in curr_track): v_aspectratio = curr_track["DisplayAspectRatio_String"]
             if("Duration_String" in curr_track): v_duration = curr_track["Duration_String"].replace("min","m").replace(" ","")
             if("FrameRate" in curr_track): v_fps = curr_track["FrameRate"].replace(".000","")
             if("FrameRate_Original" in curr_track): v_originalfps = curr_track["FrameRate_Original"].replace(".000","")
+            if("Format_Profile" in curr_track and "Format_Level" in curr_track): v_profile = curr_track["Format_Profile"] + "@" + curr_track["Format_Level"]
             if("BitRate_String" in curr_track): v_bitrate = curr_track["BitRate_String"].replace(" ","")
             if("Encoded_Library_Settings" in curr_track):
                 for field in curr_track["Encoded_Library_Settings"].split(" / "):
@@ -125,6 +126,7 @@ def get_data(path,media_info):
                 "Duration" : v_duration,
                 "FPS" : v_fps,
                 "OriginalFPS" : v_originalfps,
+                "Profile" : v_profile,
                 "Bitrate" : v_bitrate,
                 "EncodeMethod" : v_encode_method,
                 "EncodeParameter" : v_encode_param,
@@ -206,13 +208,16 @@ def print_mediainfo_dict(media_info_output,file_dict,errors_filter,printnames_fl
     if file_dict["Video"]["OriginalFPS"]!="?": output_v += " "+file_dict["Video"]["OriginalFPS"]+"->"+file_dict["Video"]["FPS"]+"fps"
     else: output_v += " "+file_dict["Video"]["FPS"]+"fps"
 
+    if file_dict["Video"]["Profile"]!="?": output_v += " "+file_dict["Video"]["Profile"]
+    else: output_v += Fore.RED+" profile=?"+Fore.RESET
+
     if file_dict["Video"]["Bitrate"]!="?": output_v += " "+file_dict["Video"]["Bitrate"]
     else: output_v += Fore.RED+" bitrate=?"+Fore.RESET
 
     if file_dict["Video"]["EncodeMethod"]!="?": output_v += " "+file_dict["Video"]["EncodeMethod"]+"="+file_dict["Video"]["EncodeParameter"]
     else: output_v += Fore.RED+" encode_method=?"+Fore.RESET
 
-    if file_dict["Chapters"]==True: output_v += " Chapters"
+    if file_dict["Chapters"]==True: output_v += " Chaps"
 
     output_v += " "+file_dict["Video"]["Codec"]+Style.DIM+" [" + file_dict["Video"]["Size"] +"]"+Style.RESET_ALL
 
