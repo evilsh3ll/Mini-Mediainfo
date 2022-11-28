@@ -30,7 +30,7 @@ options:
 
 ## Screenshot
 
-![screen](https://i.postimg.cc/y6F8PZgy/image.png)
+![screen](https://i.imgur.com/3hobyJu.png)
 
 ## Installation
 
@@ -51,8 +51,6 @@ Copy `mi.py` inside `~/.local/bin` and you will be able to run it on any termina
 - [ ] Add a function to show track names in output
 - [ ] Add a function to save output in a textfile (json/text)
 - [x] Add a function to print the full mediainfo output (fallback)
-- [ ] Add a function to filter input files by name (fallback)
 - [ ] Fix output error when opening files (audio) not matching the video mediainfo output
-- [ ] Implement a minimum settings for encoding (ptp)
-- [ ] Add a debug mode
+- [x] Implement encoding info
 - [ ] Make it multiplatform

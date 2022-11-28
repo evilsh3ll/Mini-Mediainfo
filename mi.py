@@ -102,8 +102,8 @@ def get_data(path,media_info):
             
         # Video parsing
         if curr_track["@type"] == "Video":
-            v_resolution = v_aspectratio = v_duration = v_fps = v_originalfps = v_profile = v_bitrate = v_encode_method = v_encode_lib = v_encode_param = v_codec = v_size = "?"
-            
+            v_resolution = v_aspectratio = v_duration = v_fps = v_originalfps = v_profile = v_bitrate = v_encode_lib = v_codec = v_size = "?"    # general video
+            v_rc_type = v_rc_value = v_ref = v_subme = v_me = v_merange = v_trellis = v_deblock = v_bframes = v_zones= "?"        # encoding params
             if("Width" in curr_track and "Height" in curr_track): v_resolution = curr_track["Width"]+"x"+curr_track["Height"]
             if("DisplayAspectRatio_String" in curr_track): v_aspectratio = curr_track["DisplayAspectRatio_String"]
             if("Duration_String" in curr_track): v_duration = curr_track["Duration_String"].replace("min","m").replace(" ","")
@@ -114,18 +114,28 @@ def get_data(path,media_info):
             if("Encoded_Library_Version"in curr_track): v_encode_lib = curr_track["Encoded_Library_Version"]
             if("Encoded_Library_Settings" in curr_track):
                 for field in curr_track["Encoded_Library_Settings"].split(" / "):
-                    if(("rc=" in field) and (v_encode_method=="?")): 
+                    if("ref=" in field          and v_ref=="?"):            v_ref = field.split("ref=")[1].strip()
+                    if("subme=" in field        and v_subme=="?"):          v_subme = field.split("subme=")[1].strip()
+                    if("me=" in field           and v_me=="?"):             v_me = field.split("me=")[1].strip()
+                    if("me_range=" in field     and v_merange=="?"):        v_merange = field.split("me_range=")[1].strip()
+                    if("trellis=" in field      and v_trellis=="?"):        v_trellis = field.split("trellis=")[1].strip()
+                    if("deblock=" in field      and v_deblock=="?"):
+                        if(len(field.split("deblock=")[1].split(":"))>2):   v_deblock = field.replace("deblock=0:","").replace("deblock=1:","").strip()
+                        else:                                               v_deblock = field.split("deblock=")[1].strip()
+                    if("bframes=" in field      and v_bframes=="?"):        v_bframes = field.split("bframes=")[1].strip()
+                    if("bitrate=" in field      and v_rc_value=="?"):       v_rc_value=field.split("bitrate=")[1].strip()
+                    if("zones=" in field        and v_zones=="?"):          v_zones="zoned"
+                    if("rc=" in field           and v_rc_type=="?"): 
                         if "." or "," in field.split("rc=")[1].strip():
-                            v_encode_method=field.split("rc=")[1].strip().strip("0").strip(".").strip(",")
+                            v_rc_type=field.split("rc=")[1].strip().strip("0").strip(".").strip(",")
                         else: 
-                            v_encode_method=field.split("rc=")[1].strip()
-                    if(("crf=" in field) and (v_encode_param=="?")): 
+                            v_rc_type=field.split("rc=")[1].strip()
+                    if("crf=" in field and v_rc_value=="?"): 
                         if "." or "," in field.split("crf=")[1].strip():
-                            v_encode_param=field.split("crf=")[1].strip().strip("0").strip(".").strip(",")
+                            v_rc_value=field.split("crf=")[1].strip().strip("0").strip(".").strip(",")
                         else:
-                            v_encode_method=field.split("rc=")[1].strip()
-                    if(("bitrate=" in field) and (v_encode_param=="?")): v_encode_param=field.split("bitrate=")[1].strip()
-            if("/" in v_encode_param): v_encode_param = v_encode_param.split("/")[0] # clean ZONED crf
+                            v_rc_type=field.split("rc=")[1].strip()
+            if("/" in v_rc_value): v_rc_value = v_rc_value.split("/")[0] # clean ZONED crf
             if("InternetMediaType" in curr_track): v_codec = curr_track["InternetMediaType"].replace("video/","")
             if("StreamSize_String3" in curr_track): v_size = convert_b2_to_b10(curr_track["StreamSize_String3"].replace(" ",""))
 
@@ -137,9 +147,17 @@ def get_data(path,media_info):
                 "OriginalFPS" : v_originalfps,
                 "Profile" : v_profile,
                 "Bitrate" : v_bitrate,
-                "EncodingLibrary" : v_encode_lib,
-                "EncodingMethod" : v_encode_method,
-                "EncodingParameter" : v_encode_param,
+                "ENC_lib" : v_encode_lib,
+                "ENC_rc_type" : v_rc_type,
+                "ENC_rc_value" : v_rc_value,
+                "ENC_ref" : v_ref,
+                "ENC_subme" : v_subme,
+                "ENC_me" : v_me,
+                "ENC_merange" : v_merange,
+                "ENC_trellis" : v_trellis,
+                "ENC_deblock" : v_deblock,
+                "ENC_bframes" : v_bframes,
+                "ENC_zones": v_zones,
                 "Codec" : v_codec,
                 "Size" : v_size
             }
@@ -205,12 +223,13 @@ def get_data(path,media_info):
     return parsed_file
 
 def print_mediainfo_dict(media_info_output,file_dict,errors_filter,printnames_flag,audio_filter,subs_filter,chapters_filter,not_chapters_filter,print_mediainfo_dict):
-    output_f = output_v = output_s = ""
+    output_f = output_e = output_v = output_s = ""
     output_a = {}
 
     
     # file name
     output_f = Fore.GREEN + "-> "+ file_dict["File"] + " ["+ file_dict["Size"] + "]"+ Fore.RESET
+
 
     # video info
     output_v = file_dict["Video"]["Resolution"]+" "+file_dict["Video"]["Duration"]
@@ -224,12 +243,41 @@ def print_mediainfo_dict(media_info_output,file_dict,errors_filter,printnames_fl
     if file_dict["Video"]["Bitrate"]!="?": output_v += " "+file_dict["Video"]["Bitrate"]
     else: output_v += Fore.RED+" bitrate=?"+Fore.RESET
 
-    if file_dict["Video"]["EncodingMethod"]!="?": output_v += " "+file_dict["Video"]["EncodingMethod"]+"="+file_dict["Video"]["EncodingParameter"]
-    else: output_v += Fore.RED+" encode_method=?"+Fore.RESET
-
     if file_dict["Chapters"]==True: output_v += " Chaps"
 
     output_v += " "+file_dict["Video"]["Codec"]+Style.DIM+" [" + file_dict["Video"]["Size"] +"]"+Style.RESET_ALL
+
+
+    # encoding info
+    #if file_dict["Video"]["ENC_lib"]!="?": output_e += Style.DIM + file_dict["Video"]["ENC_lib"] + Style.RESET_ALL
+    #else: output_e += Fore.RED+" enc_library=?"+Fore.RESET
+
+    if file_dict["Video"]["ENC_ref"]!="?": output_e += "ref="+file_dict["Video"]["ENC_ref"]
+    else: output_e += Fore.RED+" ref=?"+Fore.RESET
+    
+    if file_dict["Video"]["ENC_deblock"]!="?": output_e += " "+ "deblock="+file_dict["Video"]["ENC_deblock"]
+    else: output_e += Fore.RED+" deblock=?"+Fore.RESET
+    
+    if file_dict["Video"]["ENC_me"]!="?": output_e += " "+ "me="+file_dict["Video"]["ENC_me"]
+    else: output_e += Fore.RED+" me=?"+Fore.RESET
+
+    if file_dict["Video"]["ENC_merange"]!="?": output_e += " "+"merange="+file_dict["Video"]["ENC_merange"]
+    else: output_e += Fore.RED+" merange=?"+Fore.RESET
+
+    if file_dict["Video"]["ENC_subme"]!="?": output_e += " "+ "subme="+file_dict["Video"]["ENC_subme"]
+    else: output_e += Fore.RED+" subme=?"+Fore.RESET
+
+    if file_dict["Video"]["ENC_trellis"]!="?": output_e += " "+"trellis="+file_dict["Video"]["ENC_trellis"]
+    else: output_e += Fore.RED+" trellis=?"+Fore.RESET
+
+    if file_dict["Video"]["ENC_bframes"]!="?": output_e += " "+"bframes="+file_dict["Video"]["ENC_bframes"]
+    else: output_e += Fore.RED+" bframes=?"+Fore.RESET
+
+    if file_dict["Video"]["ENC_rc_type"]!="?": output_e += " "+file_dict["Video"]["ENC_rc_type"]+"="+file_dict["Video"]["ENC_rc_value"]
+    else: output_e += Fore.RED+" encode_method=?"+Fore.RESET
+
+    if file_dict["Video"]["ENC_zones"]!="?": output_e += Style.DIM + " "+ "ZONED" + Style.RESET_ALL
+
 
     # audio info
     for curr_audio in file_dict["Audio"]:
@@ -243,6 +291,7 @@ def print_mediainfo_dict(media_info_output,file_dict,errors_filter,printnames_fl
                 output_a[curr_audio["Language"]] += ", " +Style.BRIGHT + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+ Style.RESET_ALL +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
             elif curr_audio["Default"]==False:
                 output_a[curr_audio["Language"]] += ", "+curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+
 
     # subs info
     for curr_sub in file_dict["Subs"]:
@@ -302,6 +351,8 @@ def print_mediainfo_dict(media_info_output,file_dict,errors_filter,printnames_fl
         print(output_f)
         # VIDEO OUTPUT
         print(Fore.CYAN+"VID: "+Fore.RESET + output_v)
+        # ENCODING OUTPUT
+        print(Fore.CYAN+"ENC: "+Fore.RESET + output_e)
         # AUDIO OUTPUT
         if output_a == {}:
             print(Fore.CYAN+"AUD: "+Fore.RESET+Style.DIM+"-empty-"+Style.RESET_ALL)
