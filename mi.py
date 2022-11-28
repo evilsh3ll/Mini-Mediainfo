@@ -102,7 +102,7 @@ def get_data(path,media_info):
             
         # Video parsing
         if curr_track["@type"] == "Video":
-            v_resolution = v_aspectratio = v_duration = v_fps = v_originalfps = v_profile = v_bitrate = v_encode_method = v_encode_param = v_codec = v_size = "?"
+            v_resolution = v_aspectratio = v_duration = v_fps = v_originalfps = v_profile = v_bitrate = v_encode_method = v_encode_lib = v_encode_param = v_codec = v_size = "?"
             
             if("Width" in curr_track and "Height" in curr_track): v_resolution = curr_track["Width"]+"x"+curr_track["Height"]
             if("DisplayAspectRatio_String" in curr_track): v_aspectratio = curr_track["DisplayAspectRatio_String"]
@@ -111,10 +111,19 @@ def get_data(path,media_info):
             if("FrameRate_Original" in curr_track): v_originalfps = curr_track["FrameRate_Original"].replace(".000","")
             if("Format_Profile" in curr_track and "Format_Level" in curr_track): v_profile = curr_track["Format_Profile"] + "@L" + curr_track["Format_Level"]
             if("BitRate_String" in curr_track): v_bitrate = curr_track["BitRate_String"].replace(" ","")
+            if("Encoded_Library_Version"in curr_track): v_encode_lib = curr_track["Encoded_Library_Version"]
             if("Encoded_Library_Settings" in curr_track):
                 for field in curr_track["Encoded_Library_Settings"].split(" / "):
-                    if(("rc=" in field) and (v_encode_method=="?")): v_encode_method=field.split("rc=")[1].strip()
-                    if(("crf=" in field) and (v_encode_param=="?")): v_encode_param=field.split("crf=")[1].strip()
+                    if(("rc=" in field) and (v_encode_method=="?")): 
+                        if "." or "," in field.split("rc=")[1].strip():
+                            v_encode_method=field.split("rc=")[1].strip().strip("0").strip(".").strip(",")
+                        else: 
+                            v_encode_method=field.split("rc=")[1].strip()
+                    if(("crf=" in field) and (v_encode_param=="?")): 
+                        if "." or "," in field.split("crf=")[1].strip():
+                            v_encode_param=field.split("crf=")[1].strip().strip("0").strip(".").strip(",")
+                        else:
+                            v_encode_method=field.split("rc=")[1].strip()
                     if(("bitrate=" in field) and (v_encode_param=="?")): v_encode_param=field.split("bitrate=")[1].strip()
             if("/" in v_encode_param): v_encode_param = v_encode_param.split("/")[0] # clean ZONED crf
             if("InternetMediaType" in curr_track): v_codec = curr_track["InternetMediaType"].replace("video/","")
@@ -128,8 +137,9 @@ def get_data(path,media_info):
                 "OriginalFPS" : v_originalfps,
                 "Profile" : v_profile,
                 "Bitrate" : v_bitrate,
-                "EncodeMethod" : v_encode_method,
-                "EncodeParameter" : v_encode_param,
+                "EncodingLibrary" : v_encode_lib,
+                "EncodingMethod" : v_encode_method,
+                "EncodingParameter" : v_encode_param,
                 "Codec" : v_codec,
                 "Size" : v_size
             }
@@ -214,7 +224,7 @@ def print_mediainfo_dict(media_info_output,file_dict,errors_filter,printnames_fl
     if file_dict["Video"]["Bitrate"]!="?": output_v += " "+file_dict["Video"]["Bitrate"]
     else: output_v += Fore.RED+" bitrate=?"+Fore.RESET
 
-    if file_dict["Video"]["EncodeMethod"]!="?": output_v += " "+file_dict["Video"]["EncodeMethod"]+"="+file_dict["Video"]["EncodeParameter"]
+    if file_dict["Video"]["EncodingMethod"]!="?": output_v += " "+file_dict["Video"]["EncodingMethod"]+"="+file_dict["Video"]["EncodingParameter"]
     else: output_v += Fore.RED+" encode_method=?"+Fore.RESET
 
     if file_dict["Chapters"]==True: output_v += " Chaps"
