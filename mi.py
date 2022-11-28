@@ -252,12 +252,15 @@ def print_mediainfo_dict(media_info_output,file_dict,errors_filter,printnames_fl
     #if file_dict["Video"]["ENC_lib"]!="?": output_e += Style.DIM + file_dict["Video"]["ENC_lib"] + Style.RESET_ALL
     #else: output_e += Fore.RED+" enc_library=?"+Fore.RESET
 
-    if file_dict["Video"]["ENC_ref"]!="?": output_e += "ref="+file_dict["Video"]["ENC_ref"]
-    else: output_e += Fore.RED+" ref=?"+Fore.RESET
-    
+    if file_dict["Video"]["ENC_rc_type"]!="?": output_e += file_dict["Video"]["ENC_rc_type"]+"="+file_dict["Video"]["ENC_rc_value"]
+    else: output_e += Fore.RED+" encode_method=?"+Fore.RESET
+
     if file_dict["Video"]["ENC_deblock"]!="?": output_e += " "+ "deblock="+file_dict["Video"]["ENC_deblock"]
     else: output_e += Fore.RED+" deblock=?"+Fore.RESET
     
+    if file_dict["Video"]["ENC_ref"]!="?": output_e += " "+"ref="+file_dict["Video"]["ENC_ref"]
+    else: output_e += Fore.RED+" ref=?"+Fore.RESET
+
     if file_dict["Video"]["ENC_me"]!="?": output_e += " "+ "me="+file_dict["Video"]["ENC_me"]
     else: output_e += Fore.RED+" me=?"+Fore.RESET
 
@@ -272,9 +275,6 @@ def print_mediainfo_dict(media_info_output,file_dict,errors_filter,printnames_fl
 
     if file_dict["Video"]["ENC_bframes"]!="?": output_e += " "+"bframes="+file_dict["Video"]["ENC_bframes"]
     else: output_e += Fore.RED+" bframes=?"+Fore.RESET
-
-    if file_dict["Video"]["ENC_rc_type"]!="?": output_e += " "+file_dict["Video"]["ENC_rc_type"]+"="+file_dict["Video"]["ENC_rc_value"]
-    else: output_e += Fore.RED+" encode_method=?"+Fore.RESET
 
     if file_dict["Video"]["ENC_zones"]!="?": output_e += Style.DIM + " "+ "ZONED" + Style.RESET_ALL
 
