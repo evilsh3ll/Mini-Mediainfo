@@ -80,10 +80,10 @@ def minimize_s_codec(codec):
     return codec
 
 def get_resolution(h):
-    if(int(h)>=0 and int(h)<=480): return "SD"
-    elif(int(h)>=480 and int(h)<=720): return "HD"
-    elif(int(h)>=720 and int(h)<=1080): return "FHD"
-    elif(int(h)>=1440 and int(h)<=2160): return "UHD"
+    if(int(h)>=0 and int(h)<=480):          return "SD"
+    elif(int(h)>=480 and int(h)<=720):      return "HD"
+    elif(int(h)>=720 and int(h)<=1080):     return "FHD"
+    elif(int(h)>=1440 and int(h)<=2160):    return "UHD"
   
 def get_data(path,media_info):
     parsed_file = {

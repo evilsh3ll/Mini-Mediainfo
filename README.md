@@ -59,5 +59,6 @@ Copy `mi.py` inside `~/.local/bin` and you will be able to run it on any termina
 - [ ] Add a function to save output in a textfile (json/text)
 - [x] Add a function to print the full mediainfo output (fallback)
 - [ ] Fix output error when opening files (audio) not matching the video mediainfo output
+- [ ] Fix audio missing when opening files (avi)
 - [x] Implement encoding info
 - [ ] Make it multiplatform
