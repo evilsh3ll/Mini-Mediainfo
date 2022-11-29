@@ -33,8 +33,6 @@ options:
                         show only files without chapters
   -pn, --printnames     print only filenames
   -v, --verbose         fallback to vanilla mediainfo output
-
-
 ```
 
 ## Screenshot
