@@ -18,7 +18,7 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   -r, --recursive       parse all foders recursively without depth limit
-  -fn FILTER_NAME, --filter_names FILTER_NAME
+  -fn FILTER_NAME, --filter_name FILTER_NAME
                         show only files with specific name
   -fr {SD,HD,FHD,UHD}, --filter_resolution {SD,HD,FHD,UHD}
                         show only files with specific resolution
