@@ -85,7 +85,6 @@ def get_resolution(h):
     elif(int(h)>=720 and int(h)<=1080): return "FHD"
     elif(int(h)>=1440 and int(h)<=2160): return "UHD"
   
-
 def get_data(path,media_info):
     parsed_file = {
         "Path" : "?",
@@ -229,7 +228,7 @@ def get_data(path,media_info):
 
     return parsed_file
 
-def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_resolution,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,print_mediainfo_dict):
+def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_names,filter_resolution,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,print_mediainfo_dict):
     output_f = output_e = output_v = output_s = ""
     output_a = {}
 
@@ -336,6 +335,7 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_resolu
     
     # FILTERS
     if( filter_errors==True and ( ("?" not in output_v) and ("?" not in output_a.values()) and ("?" not in output_s) ) ): return # error mode: jump file if it has errors
+    if( filter_names!=None and ( filter_names not in file_dict["File"] ) ): return # error mode: jump file if it has errors
     if( filter_resolution!=None and filter_resolution!=get_resolution(file_dict["Video"]["Resolution"].split("x")[1]) ): return # resolution filter mode: jump file if it has the resolution string
     if( filter_audio!=None and (not any(curr_audio_dict["Codec"] == filter_audio for curr_audio_dict in file_dict["Audio"] )) ): return # audio filter mode: jump file if it has the audio string
     if( filter_subs!=None and (not any(curr_sub_dict["Codec"] == filter_subs for curr_sub_dict in file_dict["Subs"] )) ): return # subs filter mode: jump file if it has the sub string 
@@ -372,7 +372,7 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_resolu
         else: print(Fore.CYAN+"SUB: "+Fore.RESET + output_s)
         print("")
 
-def parse_all_files(path,filter_errors,filter_resolution,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag):
+def parse_all_files(path,filter_errors,filter_names,filter_resolution,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag):
     if path[-1] != "/": path = path + "/" #fix path
     files,folders = get_files(path) #load files and folders
     files = sorted(files, key=str.lower) #sort files list
@@ -382,19 +382,20 @@ def parse_all_files(path,filter_errors,filter_resolution,printnames_flag,recursi
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
         file_dict = get_data(os.path.abspath(path+curr_file),media_info_output)
-        print_mediainfo_dict(MediaInfo.parse(path+curr_file,output="",full=False),file_dict,filter_errors,filter_resolution,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
+        print_mediainfo_dict(MediaInfo.parse(path+curr_file,output="",full=False),file_dict,filter_errors,filter_names,filter_resolution,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
 
     if(recursive_flag):
         for curr_folder in folders:
             print("")
             print(Fore.MAGENTA + path + curr_folder +"/" + Fore.RESET)
-            parse_all_files(path+curr_folder,filter_errors,filter_resolution,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
+            parse_all_files(path+curr_folder,filter_errors,filter_names,filter_resolution,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
 
 def main():
     # Commandline input
     parser = argparse.ArgumentParser(description='print mediainfo output in a compact way')
     parser.add_argument('path', type=str, nargs=1, help='the folder or file path')
     parser.add_argument('-r',  '--recursive', help='parse all foders recursively without depth limit', action='store_true')
+    parser.add_argument('-fn', '--filter_names', type=str, help='show only files with specific name', action='store')
     parser.add_argument('-fr', '--filter_resolution', type=str, help='show only files with specific resolution', choices=['SD','HD','FHD','UHD'])
     parser.add_argument('-fe', '--filter_errors', help='show only files with errors in tags', action='store_true')
     parser.add_argument('-fa', '--filter_audio', type=str, help='show only files with specific audio', choices=['TrueHD','TrueHD-Atmos','DD','DDP','DDP-Atmos','DD-Atmos','DTS','DTS-ES','DTS-HD','DTS-MA','AAC'])
@@ -408,6 +409,7 @@ def main():
     # Variable migration
     path = os.path.abspath(args.path[0])
     filter_errors = args.filter_errors
+    filter_names = args.filter_names
     filter_resolution= args.filter_resolution
     recursive_flag = args.recursive
     filter_audio= args.filter_audio
@@ -419,7 +421,7 @@ def main():
     
     # Load file/s & print info
     if os.path.isdir(path):     # -------- DIRECTORY --------
-        parse_all_files(path,filter_errors,filter_resolution,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
+        parse_all_files(path,filter_errors,filter_names,filter_resolution,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
             
     else:                       # -------- SINGLE FILE --------
         # check errors
@@ -430,7 +432,7 @@ def main():
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path,output="JSON"))
         file_dict = get_data(os.path.abspath(path),media_info_output)
-        print_mediainfo_dict(MediaInfo.parse(path, output="", full=False),file_dict,False,filter_resolution,printnames_flag,None,None,None,None,verbose_flag)
+        print_mediainfo_dict(MediaInfo.parse(path, output="", full=False),file_dict,False,filter_names,filter_resolution,printnames_flag,None,None,None,None,verbose_flag)
 
 
 if __name__ == "__main__":
