@@ -36,7 +36,7 @@ options:
 
 ## Screenshot
 
-![screen](https://i.imgur.com/zMGww5A.png)
+![screen](https://i.imgur.com/UMMqqfl.png)
 
 ## Installation
 
