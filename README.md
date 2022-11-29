@@ -5,32 +5,38 @@ A basic mediainfo wrapper with minimalistic output. A simple tool for DataHoarde
 ## Usage
 
 ```
-usage: mi.py [-h] [-r] [-ef] [-af {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}] [-sf {vob,srt,sup,ass,vtt}] [-cf] [-cnf] [-pn] [-v] path
+usage: mi.py [-h] [-r] [-fr {SD,HD,FHD,UHD}] [-fe]
+             [-fa {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}]
+             [-fs {vob,srt,sup,ass,vtt}] [-fc] [-fnc] [-pn] [-v]
+             path
 
-Print mediainfo output in a compact way
+print mediainfo output in a compact way
 
 positional arguments:
-  path                  The folder or file path
+  path                  the folder or file path
 
 options:
   -h, --help            show this help message and exit
-  -r, --recursive       Parse all foders recursively without depth limit
-  -ef, --errors_filter  Show only files with errors in tags
-  -af {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}, --audio_filter {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}
-                        Show only files with specific audio
-  -sf {vob,srt,sup,ass,vtt}, --subs_filter {vob,srt,sup,ass,vtt}
-                        Show only files with specific subs
-  -cf, --chapters_filter
-                        Show only files with chapters
-  -cnf, --not_chapters_filter
-                        Show only files without chapters
-  -pn, --printnames     Print only filenames
-  -v, --verbose         Fallback to vanilla mediainfo output
+  -r, --recursive       parse all foders recursively without depth limit
+  -fr {SD,HD,FHD,UHD}, --filter_resolution {SD,HD,FHD,UHD}
+                        show only files with specific resolution
+  -fe, --filter_errors  show only files with errors in tags
+  -fa {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}, --filter_audio {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}
+                        show only files with specific audio
+  -fs {vob,srt,sup,ass,vtt}, --filter_subs {vob,srt,sup,ass,vtt}
+                        show only files with specific subs
+  -fc, --filter_chapters
+                        show only files with chapters
+  -fnc, --filter_not_chapters
+                        show only files without chapters
+  -pn, --printnames     print only filenames
+  -v, --verbose         fallback to vanilla mediainfo output
+
 ```
 
 ## Screenshot
 
-![screen](https://i.imgur.com/QdusOJ5.png)
+![screen](https://i.imgur.com/zMGww5A.png)
 
 ## Installation
 
