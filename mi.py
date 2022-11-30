@@ -115,7 +115,9 @@ def get_data(path,media_info):
             if("Duration_String" in curr_track): v_duration = curr_track["Duration_String"].replace("min","m").replace(" ","")
             if("FrameRate" in curr_track): v_fps = curr_track["FrameRate"].replace(".000","")
             if("FrameRate_Original" in curr_track): v_originalfps = curr_track["FrameRate_Original"].replace(".000","")
-            if("Format_Profile" in curr_track and "Format_Level" in curr_track): v_profile = curr_track["Format_Profile"] + "@L" + curr_track["Format_Level"]
+            if("Format_Profile" in curr_track and "Format_Level" in curr_track): 
+                if(curr_track["Format_Level"]=="Main" or curr_track["Format_Level"]=="High"): v_profile = curr_track["Format_Profile"]
+                else: v_profile = curr_track["Format_Profile"] + "@L" + curr_track["Format_Level"]
             if("BitRate_String" in curr_track): v_bitrate = curr_track["BitRate_String"].replace(" ","")
             if("Encoded_Library_Version"in curr_track): v_encode_lib = curr_track["Encoded_Library_Version"]
             if("Encoded_Library_Settings" in curr_track):
