@@ -37,7 +37,7 @@ options:
 
 ## Screenshot
 
-![screen](https://i.imgur.com/UMMqqfl.png)
+![screen](https://i.imgur.com/3syonwl.png)
 
 ## Installation
 
@@ -58,6 +58,7 @@ Copy `mi.py` inside `~/.local/bin` and you will be able to run it on any termina
 - [x] Add a function to show only names in output
 - [ ] Add a function to save output in a textfile (json/text)
 - [x] Add a function to print the full mediainfo output (fallback)
+- [x] Add mediainfo tracks numbers
 - [ ] Fix output error when opening files (audio) not matching the video mediainfo output
 - [ ] Fix audio missing when opening files (avi)
 - [x] Implement encoding info
