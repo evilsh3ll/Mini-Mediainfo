@@ -295,16 +295,29 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
 
     # audio info
     for curr_audio in file_dict["Audio"]:
-        if curr_audio["Language"] not in output_a:
-            if curr_audio["Default"]==True:
-                output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+ curr_audio["Bitrate"]+ Style.RESET_ALL +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
-            elif curr_audio["Default"]==False:
-                output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
-        else:
-            if curr_audio["Default"]==True:
-                output_a[curr_audio["Language"]] += ", " +Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+ Style.RESET_ALL +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
-            elif curr_audio["Default"]==False:
-                output_a[curr_audio["Language"]] += ", "+Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+        if "?" in curr_audio["Language"]: # audio with errors
+            if curr_audio["Language"] not in output_a:
+                if curr_audio["Default"]==True:
+                    output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + Fore.RED + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+ curr_audio["Bitrate"]+ Style.RESET_ALL +Fore.RESET+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+                elif curr_audio["Default"]==False:
+                    output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Fore.RED + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+ Fore.RESET +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+            else:
+                if curr_audio["Default"]==True:
+                    output_a[curr_audio["Language"]] += ", " +Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + Fore.RED + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+ Style.RESET_ALL+ Fore.RESET + Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+                elif curr_audio["Default"]==False:
+                    output_a[curr_audio["Language"]] += ", "+Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Fore.RED + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+  Fore.RESET_ALL + Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+        else:                           # audio without errors
+            if curr_audio["Language"] not in output_a:
+                if curr_audio["Default"]==True:
+                    output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+ curr_audio["Bitrate"]+ Style.RESET_ALL +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+                elif curr_audio["Default"]==False:
+                    output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+            else:
+                if curr_audio["Default"]==True:
+                    output_a[curr_audio["Language"]] += ", " +Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+ Style.RESET_ALL +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+                elif curr_audio["Default"]==False:
+                    output_a[curr_audio["Language"]] += ", "+Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+
 
 
     # subs info
@@ -330,10 +343,10 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
         if curr_sub["Forced"]==True:
             if curr_sub["Default"]==True: 
                 if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL
-                else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+" [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL
+                else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL
             elif curr_sub["Default"]==False:
                 if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"
-                else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+" [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"
+                else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"
         else:
             if curr_sub["Default"]==True:
                 if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL
@@ -374,8 +387,7 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
             print(Fore.CYAN+"AUD: "+Fore.RESET+Style.DIM+"-empty-"+Style.RESET_ALL)
         else:
             for key_lang in output_a:
-                if key_lang=="?": print(Fore.RED+"AUD:" +Fore.RESET + output_a[key_lang])
-                else: print(Fore.CYAN+"AUD: "+Fore.RESET + output_a[key_lang])
+                print(Fore.CYAN+"AUD:"+Fore.RESET +" "+ output_a[key_lang])
         # SUBS OUTPUT
         if output_s == "": print(Fore.CYAN+"SUB: "+Fore.RESET +Style.DIM+"-empty-"+Style.RESET_ALL)
         else: print(Fore.CYAN+"SUB: "+Fore.RESET + output_s)
