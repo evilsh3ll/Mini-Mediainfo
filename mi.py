@@ -179,7 +179,7 @@ def get_data(path,media_info):
             a_id = a_lang = a_codec = a_channels = a_bitrate = a_size = a_default = "?"
 
             if("ID" in curr_track): a_id = curr_track["ID"]
-            if("Language_String3" in curr_track): a_lang = curr_track["Language_String3"].capitalize()
+            if("Language_String3" in curr_track): a_lang = curr_track["Language_String3"].upper()
             if("Format_Commercial" in curr_track): a_codec = minimize_a_codec(curr_track["Format_Commercial"])
             if("ChannelLayout" in curr_track): a_channels = minimize_channels(curr_track["ChannelLayout"])
             if("ChannelLayout_Original" in curr_track): a_channels = minimize_channels(curr_track["ChannelLayout_Original"])
@@ -207,7 +207,7 @@ def get_data(path,media_info):
             s_id = s_lang = s_codec = s_forced = s_default = "?"
 
             if("ID" in curr_track): s_id = curr_track["ID"]
-            if("Language_String3" in curr_track): s_lang = curr_track["Language_String3"].capitalize()
+            if("Language_String3" in curr_track): s_lang = curr_track["Language_String3"].upper()
             if("CodecID" in curr_track): s_codec = minimize_s_codec(curr_track["CodecID"])
             if("Default" in curr_track):
                 if curr_track["Default"] == "Yes" : s_default = True
@@ -297,14 +297,14 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
     for curr_audio in file_dict["Audio"]:
         if curr_audio["Language"] not in output_a:
             if curr_audio["Default"]==True:
-                output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + curr_audio["Language"].upper() + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+ curr_audio["Bitrate"]+ Style.RESET_ALL +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+                output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+ curr_audio["Bitrate"]+ Style.RESET_ALL +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
             elif curr_audio["Default"]==False:
-                output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ curr_audio["Language"].upper() + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+                output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
         else:
             if curr_audio["Default"]==True:
-                output_a[curr_audio["Language"]] += ", " +Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + curr_audio["Language"].upper() + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+ Style.RESET_ALL +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+                output_a[curr_audio["Language"]] += ", " +Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+ Style.RESET_ALL +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
             elif curr_audio["Default"]==False:
-                output_a[curr_audio["Language"]] += ", "+Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ curr_audio["Language"].upper() + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+                output_a[curr_audio["Language"]] += ", "+Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
 
 
     # subs info
