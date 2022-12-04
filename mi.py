@@ -84,6 +84,7 @@ def get_resolution(h):
     elif(int(h)>576 and int(h)<=720):      return "HD"
     elif(int(h)>720 and int(h)<=1080):     return "FHD"
     elif(int(h)>1080 and int(h)<=2160):    return "UHD"
+    else:                                  return ">UHD"
   
 def get_data(path,media_info):
     parsed_file = {
@@ -366,7 +367,7 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
     
     # check: print only names
     if (printnames_flag == True):
-            print(output_f)
+            print(file_dict["File"])
             return
 
    
