@@ -408,8 +408,8 @@ def parse_all_files(path,filter_errors,filter_name,filter_resolution,printnames_
 
     if(recursive_flag):
         for curr_folder in folders:
-            print("")
-            print(Fore.MAGENTA + path + curr_folder +"/" + Fore.RESET)
+            if(not printnames_flag): print("")
+            if(not printnames_flag): print(Fore.MAGENTA + path + curr_folder +"/" + Fore.RESET)
             parse_all_files(path+curr_folder,filter_errors,filter_name,filter_resolution,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
 
 def main():
