@@ -88,7 +88,7 @@ def get_resolution(h):
   
 def get_data(path,media_info):
     parsed_file = {
-        "Path" : "?",
+        "FullPath" : "?",
         "File" : "?",
         "Size" : "?",
         "Video" : {},
@@ -103,7 +103,7 @@ def get_data(path,media_info):
         # General Parsing
         if curr_track["@type"] == "General":
             parsed_file["Size"] = convert_b2_to_b10(curr_track["FileSize_String"].replace(" ",""))
-            parsed_file["Path"] = path
+            parsed_file["FullPath"] = path
             parsed_file["File"] = curr_track["FileNameExtension"]
             continue
             
@@ -238,7 +238,7 @@ def get_data(path,media_info):
 
     return parsed_file
 
-def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,filter_resolution,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,print_mediainfo_dict):
+def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,print_mediainfo_dict):
     output_f = output_e = output_v = output_s = ""
     output_a = {}
 
@@ -366,10 +366,15 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
     if( filter_not_chapters==True and file_dict["Chapters"]==True): return # not chaps mode: jump file if it has no chapters   
     
     # check: print only names
+    if (printfullnames_flag == True):
+            print(file_dict["FullPath"])
+            return
+
+    # check: print only names
     if (printnames_flag == True):
             print(file_dict["File"])
             return
-
+            
    
     if(print_mediainfo_dict==True):
          # ------ Verbose Print -----
@@ -394,7 +399,7 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
         else: print(Fore.CYAN+"SUB: "+Fore.RESET + output_s)
         print("")
 
-def parse_all_files(path,filter_errors,filter_name,filter_resolution,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag):
+def parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag):
     if path[-1] != "/": path = path + "/" #fix path
     files,folders = get_files(path) #load files and folders
     files = sorted(files, key=str.lower) #sort files list
@@ -404,13 +409,14 @@ def parse_all_files(path,filter_errors,filter_name,filter_resolution,printnames_
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
         file_dict = get_data(os.path.abspath(path+curr_file),media_info_output)
-        print_mediainfo_dict(MediaInfo.parse(path+curr_file,output="",full=False),file_dict,filter_errors,filter_name,filter_resolution,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
+        print_mediainfo_dict(MediaInfo.parse(path+curr_file,output="",full=False),file_dict,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
 
     if(recursive_flag):
         for curr_folder in folders:
-            if(not printnames_flag): print("")
-            if(not printnames_flag): print(Fore.MAGENTA + path + curr_folder +"/" + Fore.RESET)
-            parse_all_files(path+curr_folder,filter_errors,filter_name,filter_resolution,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
+            if(not printnames_flag and not printfullnames_flag): 
+                print("")
+                print(Fore.MAGENTA + path + curr_folder +"/" + Fore.RESET)
+            parse_all_files(path+curr_folder,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
 
 def main():
     # Commandline input
@@ -424,6 +430,7 @@ def main():
     parser.add_argument('-fs', '--filter_subs', type=str, help='show only files with specific subs', choices=['vob','srt','sup','ass','vtt'])
     parser.add_argument('-fc', '--filter_chapters', help='show only files with chapters', action='store_true')
     parser.add_argument('-fnc','--filter_not_chapters', help='show only files without chapters', action='store_true')
+    parser.add_argument('-pfn','--printfullnames', help='print only full filenames', action='store_true')
     parser.add_argument('-pn', '--printnames', help='print only filenames', action='store_true')
     parser.add_argument('-v',  '--verbose', help='fallback to vanilla mediainfo output', action='store_true')
     args = parser.parse_args()
@@ -438,12 +445,13 @@ def main():
     filter_subs= args.filter_subs
     filter_chapters= args.filter_chapters
     filter_not_chapters= args.filter_not_chapters
+    printfullnames_flag = args.printfullnames
     printnames_flag = args.printnames
     verbose_flag = args.verbose
     
     # Load file/s & print info
     if os.path.isdir(path):     # -------- DIRECTORY --------
-        parse_all_files(path,filter_errors,filter_name,filter_resolution,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
+        parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
             
     else:                       # -------- SINGLE FILE --------
         # check errors
@@ -454,7 +462,7 @@ def main():
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path,output="JSON"))
         file_dict = get_data(os.path.abspath(path),media_info_output)
-        print_mediainfo_dict(MediaInfo.parse(path, output="", full=False),file_dict,False,filter_name,filter_resolution,printnames_flag,None,None,None,None,verbose_flag)
+        print_mediainfo_dict(MediaInfo.parse(path, output="", full=False),file_dict,False,filter_name,filter_resolution,printfullnames_flag,printnames_flag,None,None,None,None,verbose_flag)
 
 
 if __name__ == "__main__":

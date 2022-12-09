@@ -7,7 +7,7 @@ A basic mediainfo wrapper with minimalistic output. A simple tool for DataHoarde
 ```
 usage: mi.py [-h] [-r] [-fn FILTER_NAME] [-fr {SD,HD,FHD,UHD}] [-fe]
              [-fa {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}]
-             [-fs {vob,srt,sup,ass,vtt}] [-fc] [-fnc] [-pn] [-v]
+             [-fs {vob,srt,sup,ass,vtt}] [-fc] [-fnc] [-pfn] [-pn] [-v]
              path
 
 print mediainfo output in a compact way
@@ -31,6 +31,8 @@ options:
                         show only files with chapters
   -fnc, --filter_not_chapters
                         show only files without chapters
+  -pfn, --printfullnames
+                        print only full filenames
   -pn, --printnames     print only filenames
   -v, --verbose         fallback to vanilla mediainfo output
 ```
