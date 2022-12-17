@@ -291,7 +291,7 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
     if file_dict["Video"]["ENC_bframes"]!="?": output_e += " "+"bframes="+file_dict["Video"]["ENC_bframes"]
     else: output_e += Fore.RED+" bframes=?"+Fore.RESET
 
-    if file_dict["Video"]["ENC_zones"]!="?": output_e += Style.DIM + " "+ "ZONED" + Style.RESET_ALL
+    if file_dict["Video"]["ENC_zones"]!="?": output_e += " "+ "ZONED"
 
 
     # audio info
