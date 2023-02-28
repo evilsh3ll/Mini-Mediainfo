@@ -17,7 +17,9 @@ def get_files(path):
     return all_files,all_folders
 
 def convert_b2_to_b10(size_b2):
-    if("KiB" in size_b2): return str(round(float(size_b2.replace("KiB",""))*(1.024),1)) + "KB"
+    if("Byte0" in size_b2): return "0B"
+    if("Bytes" in size_b2): return str(size_b2.replace("Bytes","")) + "B"
+    if("KiB" in size_b2): return str(round(float(size_b2.replace("KiB",""))*(1.024),1)) + "kB"
     if("MiB" in size_b2): return str(round(float(size_b2.replace("MiB",""))*(1.048576),1)) + "MB"
     if("GiB" in size_b2): return str(round(float(size_b2.replace("GiB",""))*(1.073741824),1)) + "GB"
     return size_b2
@@ -218,7 +220,7 @@ def get_data(path,media_info):
                 if curr_track["Forced"] == "Yes" : s_forced = True
                 else: s_forced = False
             if("StreamSize_String1" in curr_track):
-                s_size = convert_b2_to_b10(curr_track["StreamSize_String1"].replace(" ","").replace("Byte0","0B"))
+                s_size = convert_b2_to_b10(curr_track["StreamSize_String1"].replace(" ",""))
 
             curr_sub_dict = {
                 "ID": s_id,
