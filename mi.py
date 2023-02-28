@@ -20,6 +20,7 @@ def convert_b2_to_b10(size_b2):
     if("KiB" in size_b2): return str(round(float(size_b2.replace("KiB",""))*(1.024),1)) + "KB"
     if("MiB" in size_b2): return str(round(float(size_b2.replace("MiB",""))*(1.048576),1)) + "MB"
     if("GiB" in size_b2): return str(round(float(size_b2.replace("GiB",""))*(1.073741824),1)) + "GB"
+    return size_b2
 
 def minimize_channels(channels):
     if channels == "C":                         return "1.0"
@@ -205,7 +206,7 @@ def get_data(path,media_info):
   
         # Subtitle parsing
         if curr_track["@type"] == "Text":
-            s_id = s_lang = s_codec = s_forced = s_default = "?"
+            s_id = s_lang = s_codec = s_forced = s_size = s_default = "?"
 
             if("ID" in curr_track): s_id = curr_track["ID"]
             if("Language_String3" in curr_track): s_lang = curr_track["Language_String3"].upper()
@@ -216,13 +217,16 @@ def get_data(path,media_info):
             if("Forced" in curr_track): 
                 if curr_track["Forced"] == "Yes" : s_forced = True
                 else: s_forced = False
-            
+            if("StreamSize_String1" in curr_track):
+                s_size = convert_b2_to_b10(curr_track["StreamSize_String1"].replace(" ","").replace("Byte0","0B"))
+
             curr_sub_dict = {
                 "ID": s_id,
                 "Language" : s_lang,
                 "Codec" : s_codec,
                 "Default" : s_default,
-                "Forced" : s_forced
+                "Forced" : s_forced,
+                "Size" : s_size
             }
 
             subtitles_list.append(curr_sub_dict)
@@ -326,35 +330,35 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
         if curr_sub["Language"]=="?": # sub with error in language
             if curr_sub["Forced"]==True:
                 if curr_sub["Default"]==True: 
-                    if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET +Fore.RED +Style.BRIGHT+" [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.RESET_ALL
-                    else: output_s += Fore.RED +", "+ Fore.YELLOW+ curr_sub["ID"] + Fore.RESET +Style.BRIGHT +" [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.RESET_ALL
+                    if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET +Fore.RED +Style.BRIGHT+" [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.DIM+Style.RESET_ALL+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
+                    else: output_s += Fore.RED +", "+ Fore.YELLOW+ curr_sub["ID"] + Fore.RESET +Style.BRIGHT +" [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.DIM+Style.RESET_ALL+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
                 elif curr_sub["Default"]==False:
-                    if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET +Fore.RED +" [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET
-                    else: output_s += Fore.RED +", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET
+                    if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET +Fore.RED +" [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
+                    else: output_s += Fore.RED +", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
             else:
                 if curr_sub["Default"]==True: 
-                    if output_s=="": output_s +=  Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT +Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.RESET_ALL
-                    else: output_s += ", " + Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT +Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.RESET_ALL
+                    if output_s=="": output_s +=  Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT +Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.RESET_ALL+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
+                    else: output_s += ", " + Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT +Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.RESET_ALL+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
                 elif curr_sub["Default"]==False:
-                    if output_s=="": output_s +=  Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET
-                    else: output_s += ", " + Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET
+                    if output_s=="": output_s +=  Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
+                    else: output_s += ", " + Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
             continue
             
         # subs without errors
         if curr_sub["Forced"]==True:
             if curr_sub["Default"]==True: 
-                if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL
-                else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL
+                if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
+                else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
             elif curr_sub["Default"]==False:
-                if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"
-                else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"
+                if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
+                else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
         else:
             if curr_sub["Default"]==True:
-                if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL
-                else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL
+                if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
+                else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
             elif curr_sub["Default"]==False:
-                if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"
-                else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"
+                if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
+                else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
     
     # FILTERS
     if( filter_errors==True and ( ("?" not in output_v) and ("?" not in output_a.values()) and ("?" not in output_s) ) ): return # error mode: jump file if it has errors
