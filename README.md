@@ -5,7 +5,7 @@ A basic mediainfo wrapper with minimalistic output. A simple tool for DataHoarde
 ## Usage
 
 ```
-usage: mi.py [-h] [-r] [-fn FILTER_NAME] [-fr {SD,HD,FHD,UHD}] [-fe]
+usage: mi.py [-h] [-r] [-fn FILTER_NAME] [-fr {SD,HD,FHD,UHD}] [-fe] [-fm]
              [-fa {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}]
              [-fs {vob,srt,sup,ass,vtt}] [-fc] [-fnc] [-nc] [-pfn] [-pn] [-v]
              path
@@ -23,6 +23,8 @@ options:
   -fr {SD,HD,FHD,UHD}, --filter_resolution {SD,HD,FHD,UHD}
                         show only files with specific resolution
   -fe, --filter_errors  show only files with errors in tags
+  -fm, --filter_missing_info
+                        show only files with missing tags "?" or "-empty-"
   -fa {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}, --filter_audio {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}
                         show only files with specific audio
   -fs {vob,srt,sup,ass,vtt}, --filter_subs {vob,srt,sup,ass,vtt}
@@ -36,6 +38,7 @@ options:
                         print only full filenames
   -pn, --printnames     print only filenames
   -v, --verbose         fallback to vanilla mediainfo output
+
 ```
 
 ## Screenshot
