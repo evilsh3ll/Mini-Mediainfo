@@ -248,7 +248,7 @@ def get_data(path,media_info):
 
     return parsed_file
 
-def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,print_mediainfo_dict,no_colors_flag):
+def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,print_mediainfo_dict,no_colors_flag,filter_missing_info):
     output_f = output_e = output_v = output_s = ""
     output_a = {}
 
@@ -316,7 +316,7 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
                 if curr_audio["Default"]==True:
                     output_a[curr_audio["Language"]] += ", " +Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + Fore.RED + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+ Style.RESET_ALL+ Fore.RESET + Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
                 elif curr_audio["Default"]==False:
-                    output_a[curr_audio["Language"]] += ", "+Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Fore.RED + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+  Fore.RESET_ALL + Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
+                    output_a[curr_audio["Language"]] += ", "+Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Fore.RED + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+  Fore.RESET + Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
         else:                           # audio without errors
             if curr_audio["Language"] not in output_a:
                 if curr_audio["Default"]==True:
@@ -367,7 +367,8 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
                 else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
     
     # FILTERS
-    if( filter_errors==True and ( ("?" not in output_v) and ("?" not in output_a.values()) and ("?" not in output_s) ) ): return # error mode: jump file if it has errors
+    if( filter_missing_info==True and ("?" not in output_v) and all('?' not in value for value in output_a.values()) and ("?" not in output_s) and all('-empty-' not in value for value in output_a.values()) and ("-empty-" not in output_s) ): return # missinginfo mode: jump file if it has missing information
+    if( filter_errors==True and all('0b/s' not in value for value in output_a.values()) and ("0b/s" not in output_s) ): return # error mode: jump file if it has errors
     if( filter_name!=None and ( filter_name not in file_dict["File"] ) ): return # error mode: jump file if it has errors
     if( filter_resolution!=None and filter_resolution!=get_resolution(file_dict["Video"]["Resolution"].split("x")[1]) ): return # resolution filter mode: jump file if it has the resolution string
     if( filter_audio!=None and (not any(curr_audio_dict["Codec"] == filter_audio for curr_audio_dict in file_dict["Audio"] )) ): return # audio filter mode: jump file if it has the audio string
@@ -432,7 +433,7 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
             else: print(Fore.CYAN+"SUB: "+Fore.RESET + output_s)
         print("")
 
-def parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag):
+def parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag,filter_missing_info):
     if path[-1] != "/": path = path + "/" #fix path
     files,folders = get_files(path) #load files and folders
     files = sorted(files, key=str.lower) #sort files list
@@ -442,7 +443,7 @@ def parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullna
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
         file_dict = get_data(os.path.abspath(path+curr_file),media_info_output)
-        print_mediainfo_dict(MediaInfo.parse(path+curr_file,output="",full=False),file_dict,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag)
+        print_mediainfo_dict(MediaInfo.parse(path+curr_file,output="",full=False),file_dict,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag,filter_missing_info)
 
     if(recursive_flag):
         for curr_folder in folders:
@@ -450,7 +451,7 @@ def parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullna
                 print("")
                 if(no_colors_flag): print(path + curr_folder)
                 else: print(Fore.MAGENTA + path + curr_folder +"/" + Fore.RESET)
-            parse_all_files(path+curr_folder,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag)
+            parse_all_files(path+curr_folder,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag,filter_missing_info)
 
 def main():
     # Commandline input
@@ -460,6 +461,7 @@ def main():
     parser.add_argument('-fn', '--filter_name', type=str, help='show only files with specific name', action='store')
     parser.add_argument('-fr', '--filter_resolution', type=str, help='show only files with specific resolution', choices=['SD','HD','FHD','UHD'])
     parser.add_argument('-fe', '--filter_errors', help='show only files with errors in tags', action='store_true')
+    parser.add_argument('-fm', '--filter_missing_info', help='show only files with missing tags "?" or "-empty-"', action='store_true')
     parser.add_argument('-fa', '--filter_audio', type=str, help='show only files with specific audio', choices=['TrueHD','TrueHD-Atmos','DD','DDP','DDP-Atmos','DD-Atmos','DTS','DTS-ES','DTS-HD','DTS-MA','AAC'])
     parser.add_argument('-fs', '--filter_subs', type=str, help='show only files with specific subs', choices=['vob','srt','sup','ass','vtt'])
     parser.add_argument('-fc', '--filter_chapters', help='show only files with chapters', action='store_true')
@@ -473,6 +475,7 @@ def main():
     # Variable migration
     path = os.path.abspath(args.path[0])
     filter_errors = args.filter_errors
+    filter_missing_info = args.filter_missing_info
     filter_name = args.filter_name
     filter_resolution= args.filter_resolution
     recursive_flag = args.recursive
@@ -487,7 +490,7 @@ def main():
     
     # Load file/s & print info
     if os.path.isdir(path):     # -------- DIRECTORY --------
-        parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag)
+        parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag,filter_missing_info)
             
     else:                       # -------- SINGLE FILE --------
         # check errors
@@ -498,7 +501,7 @@ def main():
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path,output="JSON"))
         file_dict = get_data(os.path.abspath(path),media_info_output)
-        print_mediainfo_dict(MediaInfo.parse(path, output="", full=False),file_dict,False,filter_name,filter_resolution,printfullnames_flag,printnames_flag,None,None,None,None,verbose_flag,no_colors_flag)
+        print_mediainfo_dict(MediaInfo.parse(path, output="", full=False),file_dict,False,filter_name,filter_resolution,printfullnames_flag,printnames_flag,None,None,None,None,verbose_flag,no_colors_flag,filter_missing_info)
 
 
 if __name__ == "__main__":

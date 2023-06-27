@@ -60,7 +60,7 @@ Copy `mi.py` inside `~/.local/bin` and you will be able to run it on any termina
 
 - [x] Add a function to show only files with errors
 - [x] Add a function to filter files for codec
-- [ ] Add a function to filter files for specific problems
+- [x] Add a function to filter files for specific problems
 - [x] Add a function to filter input file names
 - [x] Add a function to show only names in output
 - [x] Add a function to save output in a textfile (json/text)
