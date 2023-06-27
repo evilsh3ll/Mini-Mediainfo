@@ -7,7 +7,7 @@ A basic mediainfo wrapper with minimalistic output. A simple tool for DataHoarde
 ```
 usage: mi.py [-h] [-r] [-fn FILTER_NAME] [-fr {SD,HD,FHD,UHD}] [-fe]
              [-fa {TrueHD,TrueHD-Atmos,DD,DDP,DDP-Atmos,DD-Atmos,DTS,DTS-ES,DTS-HD,DTS-MA,AAC}]
-             [-fs {vob,srt,sup,ass,vtt}] [-fc] [-fnc] [-pfn] [-pn] [-v]
+             [-fs {vob,srt,sup,ass,vtt}] [-fc] [-fnc] [-nc] [-pfn] [-pn] [-v]
              path
 
 print mediainfo output in a compact way
@@ -31,6 +31,7 @@ options:
                         show only files with chapters
   -fnc, --filter_not_chapters
                         show only files without chapters
+  -nc, --no_colors      show output without colors
   -pfn, --printfullnames
                         print only full filenames
   -pn, --printnames     print only filenames
@@ -47,9 +48,13 @@ Copy `mi.py` inside `~/.local/bin` and you will be able to run it on any termina
 
 **dependences**:
 
-- mediainfo >= 22.0
-- pymediainfo >= 5.1.0
-- colorama >= 0.4.4
+- mediainfo >= 23.04
+- pymediainfo >= 6.0.1
+- colorama >= 0.4.6
+
+## How to save output
+
+`mi . --nc >> output.txt`
 
 ## Todo
 
@@ -58,7 +63,7 @@ Copy `mi.py` inside `~/.local/bin` and you will be able to run it on any termina
 - [ ] Add a function to filter files for specific problems
 - [x] Add a function to filter input file names
 - [x] Add a function to show only names in output
-- [ ] Add a function to save output in a textfile (json/text)
+- [x] Add a function to save output in a textfile (json/text)
 - [x] Add a function to print the full mediainfo output (fallback)
 - [x] Add mediainfo tracks numbers
 - [ ] Fix output error when opening files (audio) not matching the video mediainfo output

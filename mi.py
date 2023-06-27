@@ -2,8 +2,12 @@
 import os
 import json
 import argparse
+import re
 from pymediainfo import MediaInfo # https://pymediainfo.readthedocs.io/en/stable/pymediainfo.html
 from colorama import Fore,Back,Style
+
+def clear_colors(my_string):
+    return re.sub(r'\033\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]?', '', my_string)
 
 def get_files(path):
     ext = ('.mkv','.mp4','.avi')
@@ -244,7 +248,7 @@ def get_data(path,media_info):
 
     return parsed_file
 
-def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,print_mediainfo_dict):
+def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,print_mediainfo_dict,no_colors_flag):
     output_f = output_e = output_v = output_s = ""
     output_a = {}
 
@@ -381,31 +385,54 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
             print(file_dict["File"])
             return
             
-   
     if(print_mediainfo_dict==True):
-         # ------ Verbose Print -----
+        # ------ Verbose Print -----
         print(media_info_output)
 
     else:
         # ------ Minimal Print ------
         # FILE OUTPUT
-        print(output_f)
+        if(no_colors_flag==True): # no colors
+            print(clear_colors(output_f)) 
+        else: # colored
+            print(output_f)
+        
         # VIDEO OUTPUT
-        print(Fore.CYAN+"VID: "+Fore.RESET + output_v)
+        if(no_colors_flag==True): # no colors
+            print(clear_colors(output_v))
+        else: # colored
+            print(Fore.CYAN+"VID: "+Fore.RESET + output_v)
+
         # ENCODING OUTPUT
-        print(Fore.CYAN+"ENC: "+Fore.RESET + output_e)
+        if(no_colors_flag==True): # no colors
+            print(clear_colors(output_e))
+        else: # colored
+            print(Fore.CYAN+"ENC: "+Fore.RESET + output_e)
+
         # AUDIO OUTPUT
-        if output_a == {}:
-            print(Fore.CYAN+"AUD: "+Fore.RESET+Style.DIM+"-empty-"+Style.RESET_ALL)
-        else:
-            for key_lang in output_a:
-                print(Fore.CYAN+"AUD:"+Fore.RESET +" "+ output_a[key_lang])
+        if(no_colors_flag==True): # no colors
+            if output_a == {}:
+                print("AUD: "+"-empty-")
+            else:
+                for key_lang in output_a:
+                    print("AUD:"+" "+ clear_colors(output_a[key_lang]))
+        else: # colored
+            if output_a == {}:
+                print(Fore.CYAN+"AUD: "+Fore.RESET+Style.DIM+"-empty-"+Style.RESET_ALL)
+            else:
+                for key_lang in output_a:
+                    print(Fore.CYAN+"AUD:"+Fore.RESET +" "+ output_a[key_lang])
+        
         # SUBS OUTPUT
-        if output_s == "": print(Fore.CYAN+"SUB: "+Fore.RESET +Style.DIM+"-empty-"+Style.RESET_ALL)
-        else: print(Fore.CYAN+"SUB: "+Fore.RESET + output_s)
+        if(no_colors_flag==True): # no colors
+            if output_s == "": print("SUB: "+"-empty-")
+            else: print("SUB: "+ clear_colors(output_s))
+        else: # colored
+            if output_s == "": print(Fore.CYAN+"SUB: "+Fore.RESET +Style.DIM+"-empty-"+Style.RESET_ALL)
+            else: print(Fore.CYAN+"SUB: "+Fore.RESET + output_s)
         print("")
 
-def parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag):
+def parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag):
     if path[-1] != "/": path = path + "/" #fix path
     files,folders = get_files(path) #load files and folders
     files = sorted(files, key=str.lower) #sort files list
@@ -415,14 +442,14 @@ def parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullna
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
         file_dict = get_data(os.path.abspath(path+curr_file),media_info_output)
-        print_mediainfo_dict(MediaInfo.parse(path+curr_file,output="",full=False),file_dict,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
+        print_mediainfo_dict(MediaInfo.parse(path+curr_file,output="",full=False),file_dict,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag)
 
     if(recursive_flag):
         for curr_folder in folders:
             if(not printnames_flag and not printfullnames_flag): 
                 print("")
                 print(Fore.MAGENTA + path + curr_folder +"/" + Fore.RESET)
-            parse_all_files(path+curr_folder,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
+            parse_all_files(path+curr_folder,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag)
 
 def main():
     # Commandline input
@@ -436,6 +463,7 @@ def main():
     parser.add_argument('-fs', '--filter_subs', type=str, help='show only files with specific subs', choices=['vob','srt','sup','ass','vtt'])
     parser.add_argument('-fc', '--filter_chapters', help='show only files with chapters', action='store_true')
     parser.add_argument('-fnc','--filter_not_chapters', help='show only files without chapters', action='store_true')
+    parser.add_argument('-nc', '--no_colors', help='show output without colors', action='store_true')
     parser.add_argument('-pfn','--printfullnames', help='print only full filenames', action='store_true')
     parser.add_argument('-pn', '--printnames', help='print only filenames', action='store_true')
     parser.add_argument('-v',  '--verbose', help='fallback to vanilla mediainfo output', action='store_true')
@@ -451,13 +479,14 @@ def main():
     filter_subs= args.filter_subs
     filter_chapters= args.filter_chapters
     filter_not_chapters= args.filter_not_chapters
+    no_colors_flag=args.no_colors
     printfullnames_flag = args.printfullnames
     printnames_flag = args.printnames
     verbose_flag = args.verbose
     
     # Load file/s & print info
     if os.path.isdir(path):     # -------- DIRECTORY --------
-        parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag)
+        parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,recursive_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag)
             
     else:                       # -------- SINGLE FILE --------
         # check errors
@@ -468,7 +497,7 @@ def main():
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path,output="JSON"))
         file_dict = get_data(os.path.abspath(path),media_info_output)
-        print_mediainfo_dict(MediaInfo.parse(path, output="", full=False),file_dict,False,filter_name,filter_resolution,printfullnames_flag,printnames_flag,None,None,None,None,verbose_flag)
+        print_mediainfo_dict(MediaInfo.parse(path, output="", full=False),file_dict,False,filter_name,filter_resolution,printfullnames_flag,printnames_flag,None,None,None,None,verbose_flag,no_colors_flag)
 
 
 if __name__ == "__main__":
