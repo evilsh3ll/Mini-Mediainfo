@@ -58,18 +58,3 @@ Copy `mi.py` inside `~/.local/bin` and you will be able to run it on any termina
 ## How to save output
 
 `mi . --nc >> output.txt`
-
-## Todo
-
-- [x] Add a function to show only files with errors
-- [x] Add a function to filter files for codec
-- [x] Add a function to filter files for specific problems
-- [x] Add a function to filter input file names
-- [x] Add a function to show only names in output
-- [x] Add a function to save output in a textfile (json/text)
-- [x] Add a function to print the full mediainfo output (fallback)
-- [x] Add mediainfo tracks numbers
-- [ ] Fix output error when opening files (audio) not matching the video mediainfo output
-- [ ] Fix audio missing when opening files (avi)
-- [x] Implement encoding info
-- [ ] Make it multiplatform

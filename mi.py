@@ -10,12 +10,10 @@ def clear_colors(my_string):
     return re.sub(r'\033\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]?', '', my_string)
 
 def get_files(path):
-    ext = ('.mkv','.mp4','.avi')
     all_files = []
     all_folders = []
     for curr_file in os.listdir(path):
-        if curr_file.endswith(ext):
-            all_files.append(curr_file)
+        all_files.append(curr_file)
         if os.path.isdir(path+curr_file):
             all_folders.append(curr_file)
     return all_files,all_folders
@@ -92,7 +90,7 @@ def get_resolution(h):
     elif(int(h)>720 and int(h)<=1080):     return "FHD"
     elif(int(h)>1080 and int(h)<=2160):    return "UHD"
     else:                                  return ">UHD"
-  
+
 def get_data(path,media_info):
     parsed_file = {
         "FullPath" : "?",
@@ -442,9 +440,12 @@ def parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullna
     files,folders = get_files(path) #load files and folders
     files = sorted(files, key=str.lower) #sort files list
     folders = sorted(folders, key=str.lower) #sort folders list
-    print(files)
+
     for curr_file in files:
-        # Parse info
+        # -- Parse info --
+        # unsupported mediainfo file
+        if(MediaInfo.parse(path+curr_file,output="JSON")==""): continue
+        # supported mediainfo file
         media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
         file_dict = get_data(os.path.abspath(path+curr_file),media_info_output)
         print_mediainfo_dict(MediaInfo.parse(path+curr_file,output="",full=False),file_dict,filter_errors,filter_name,filter_resolution,printfullnames_flag,printnames_flag,filter_audio,filter_subs,filter_chapters,filter_not_chapters,verbose_flag,no_colors_flag,filter_missing_info)
@@ -502,7 +503,12 @@ def main():
             print("ERR: Can't filter a single file")
             return
 
-        # Parse info
+        # -- Parse info --
+        # unsupported or not valid file
+        if(not os.path.isfile(path) or MediaInfo.parse(path,output="JSON")==""): 
+            print("ERR: unsupported or not valid file")
+            return
+        # supported mediainfo file        
         media_info_output = json.loads(MediaInfo.parse(path,output="JSON"))
         file_dict = get_data(os.path.abspath(path),media_info_output)
         print_mediainfo_dict(MediaInfo.parse(path, output="", full=False),file_dict,False,filter_name,filter_resolution,printfullnames_flag,printnames_flag,None,None,None,None,verbose_flag,no_colors_flag,filter_missing_info)
