@@ -257,51 +257,52 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
     output_f = Fore.GREEN + "-> "+ file_dict["File"] + " ["+ file_dict["Size"] + "]"+ Fore.RESET
 
     # video info
-    output_v = Fore.YELLOW+ file_dict["Video"]["ID"] + Fore.RESET+" "+file_dict["Video"]["Resolution"]+" "+get_resolution(file_dict["Video"]["Resolution"].split("x")[1])+" "+file_dict["Video"]["Duration"]
+    if(len(file_dict["Video"])!=0):
+        output_v = Fore.YELLOW+ file_dict["Video"]["ID"] + Fore.RESET+" "+file_dict["Video"]["Resolution"]+" "+get_resolution(file_dict["Video"]["Resolution"].split("x")[1])+" "+file_dict["Video"]["Duration"]
 
-    if file_dict["Video"]["OriginalFPS"]!="?": output_v += " "+file_dict["Video"]["OriginalFPS"]+"->"+file_dict["Video"]["FPS"]+"fps"
-    else: output_v += " "+file_dict["Video"]["FPS"]+"fps"
+        if file_dict["Video"]["OriginalFPS"]!="?": output_v += " "+file_dict["Video"]["OriginalFPS"]+"->"+file_dict["Video"]["FPS"]+"fps"
+        else: output_v += " "+file_dict["Video"]["FPS"]+"fps"
 
-    if file_dict["Video"]["Profile"]!="?": output_v += " "+file_dict["Video"]["Profile"]
-    else: output_v += Fore.RED+" profile=?"+Fore.RESET
+        if file_dict["Video"]["Profile"]!="?": output_v += " "+file_dict["Video"]["Profile"]
+        else: output_v += Fore.RED+" profile=?"+Fore.RESET
 
-    if file_dict["Video"]["Bitrate"]!="?": output_v += " "+file_dict["Video"]["Bitrate"]
-    else: output_v += Fore.RED+" bitrate=?"+Fore.RESET
+        if file_dict["Video"]["Bitrate"]!="?": output_v += " "+file_dict["Video"]["Bitrate"]
+        else: output_v += Fore.RED+" bitrate=?"+Fore.RESET
 
-    if file_dict["Chapters"]==True: output_v += " Chaps"
+        if file_dict["Chapters"]==True: output_v += " Chaps"
 
-    output_v += " "+file_dict["Video"]["Codec"]+Style.DIM+" [" + file_dict["Video"]["Size"] +"]"+Style.RESET_ALL
+        output_v += " "+file_dict["Video"]["Codec"]+Style.DIM+" [" + file_dict["Video"]["Size"] +"]"+Style.RESET_ALL
 
 
-    # encoding info
-    #if file_dict["Video"]["ENC_lib"]!="?": output_e += Style.DIM + file_dict["Video"]["ENC_lib"] + Style.RESET_ALL
-    #else: output_e += Fore.RED+" enc_library=?"+Fore.RESET
+        # encoding info
+        #if file_dict["Video"]["ENC_lib"]!="?": output_e += Style.DIM + file_dict["Video"]["ENC_lib"] + Style.RESET_ALL
+        #else: output_e += Fore.RED+" enc_library=?"+Fore.RESET
 
-    if file_dict["Video"]["ENC_rc_type"]!="?": output_e += file_dict["Video"]["ENC_rc_type"]+"="+file_dict["Video"]["ENC_rc_value"]
-    else: output_e += Fore.RED+"encode_method=?"+Fore.RESET
+        if file_dict["Video"]["ENC_rc_type"]!="?": output_e += file_dict["Video"]["ENC_rc_type"]+"="+file_dict["Video"]["ENC_rc_value"]
+        else: output_e += Fore.RED+"encode_method=?"+Fore.RESET
 
-    if file_dict["Video"]["ENC_deblock"]!="?": output_e += " "+ "deblock="+file_dict["Video"]["ENC_deblock"]
-    else: output_e += Fore.RED+" deblock=?"+Fore.RESET
-    
-    if file_dict["Video"]["ENC_ref"]!="?": output_e += " "+"ref="+file_dict["Video"]["ENC_ref"]
-    else: output_e += Fore.RED+" ref=?"+Fore.RESET
+        if file_dict["Video"]["ENC_deblock"]!="?": output_e += " "+ "deblock="+file_dict["Video"]["ENC_deblock"]
+        else: output_e += Fore.RED+" deblock=?"+Fore.RESET
+        
+        if file_dict["Video"]["ENC_ref"]!="?": output_e += " "+"ref="+file_dict["Video"]["ENC_ref"]
+        else: output_e += Fore.RED+" ref=?"+Fore.RESET
 
-    if file_dict["Video"]["ENC_me"]!="?": output_e += " "+ "me="+file_dict["Video"]["ENC_me"]
-    else: output_e += Fore.RED+" me=?"+Fore.RESET
+        if file_dict["Video"]["ENC_me"]!="?": output_e += " "+ "me="+file_dict["Video"]["ENC_me"]
+        else: output_e += Fore.RED+" me=?"+Fore.RESET
 
-    if file_dict["Video"]["ENC_merange"]!="?": output_e += " "+"merange="+file_dict["Video"]["ENC_merange"]
-    else: output_e += Fore.RED+" merange=?"+Fore.RESET
+        if file_dict["Video"]["ENC_merange"]!="?": output_e += " "+"merange="+file_dict["Video"]["ENC_merange"]
+        else: output_e += Fore.RED+" merange=?"+Fore.RESET
 
-    if file_dict["Video"]["ENC_subme"]!="?": output_e += " "+ "subme="+file_dict["Video"]["ENC_subme"]
-    else: output_e += Fore.RED+" subme=?"+Fore.RESET
+        if file_dict["Video"]["ENC_subme"]!="?": output_e += " "+ "subme="+file_dict["Video"]["ENC_subme"]
+        else: output_e += Fore.RED+" subme=?"+Fore.RESET
 
-    if file_dict["Video"]["ENC_trellis"]!="?": output_e += " "+"trellis="+file_dict["Video"]["ENC_trellis"]
-    else: output_e += Fore.RED+" trellis=?"+Fore.RESET
+        if file_dict["Video"]["ENC_trellis"]!="?": output_e += " "+"trellis="+file_dict["Video"]["ENC_trellis"]
+        else: output_e += Fore.RED+" trellis=?"+Fore.RESET
 
-    if file_dict["Video"]["ENC_bframes"]!="?": output_e += " "+"bframes="+file_dict["Video"]["ENC_bframes"]
-    else: output_e += Fore.RED+" bframes=?"+Fore.RESET
+        if file_dict["Video"]["ENC_bframes"]!="?": output_e += " "+"bframes="+file_dict["Video"]["ENC_bframes"]
+        else: output_e += Fore.RED+" bframes=?"+Fore.RESET
 
-    if file_dict["Video"]["ENC_zones"]!="?": output_e += " "+ "ZONED"
+        if file_dict["Video"]["ENC_zones"]!="?": output_e += " "+ "ZONED"
 
 
     # audio info
@@ -310,25 +311,24 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
             if curr_audio["Language"] not in output_a:
                 if curr_audio["Default"]==True:
                     output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + Fore.RED + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+ curr_audio["Bitrate"]+ Style.RESET_ALL +Fore.RESET+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
-                elif curr_audio["Default"]==False:
+                else:
                     output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Fore.RED + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+ Fore.RESET +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
             else:
                 if curr_audio["Default"]==True:
                     output_a[curr_audio["Language"]] += ", " +Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + Fore.RED + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+ Style.RESET_ALL+ Fore.RESET + Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
-                elif curr_audio["Default"]==False:
+                else:
                     output_a[curr_audio["Language"]] += ", "+Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Fore.RED + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+  Fore.RESET + Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
         else:                           # audio without errors
             if curr_audio["Language"] not in output_a:
                 if curr_audio["Default"]==True:
                     output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+ curr_audio["Bitrate"]+ Style.RESET_ALL +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
-                elif curr_audio["Default"]==False:
+                else:
                     output_a[curr_audio["Language"]] = Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
             else:
                 if curr_audio["Default"]==True:
                     output_a[curr_audio["Language"]] += ", " +Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ Style.BRIGHT + curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+ Style.RESET_ALL +Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
-                elif curr_audio["Default"]==False:
+                else:
                     output_a[curr_audio["Language"]] += ", "+Fore.YELLOW+ curr_audio["ID"] + Fore.RESET + " "+ curr_audio["Language"] + " " + curr_audio["Codec"]+" "+curr_audio["Channels"]+" "+curr_audio["Bitrate"]+Style.DIM+" ["+curr_audio["Size"]+"]"+Style.RESET_ALL
-
 
 
     # subs info
@@ -338,14 +338,14 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
                 if curr_sub["Default"]==True: 
                     if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET +Fore.RED +Style.BRIGHT+" [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.DIM+Style.RESET_ALL+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
                     else: output_s += Fore.RED +", "+ Fore.YELLOW+ curr_sub["ID"] + Fore.RESET +Style.BRIGHT +" [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.DIM+Style.RESET_ALL+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
-                elif curr_sub["Default"]==False:
+                else:
                     if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET +Fore.RED +" [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
                     else: output_s += Fore.RED +", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " [F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
             else:
                 if curr_sub["Default"]==True: 
                     if output_s=="": output_s +=  Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT +Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.RESET_ALL+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
                     else: output_s += ", " + Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT +Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.RESET_ALL+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
-                elif curr_sub["Default"]==False:
+                else:
                     if output_s=="": output_s +=  Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
                     else: output_s += ", " + Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Fore.RED + curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+ Fore.RESET+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
             continue
@@ -355,14 +355,14 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
             if curr_sub["Default"]==True: 
                 if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
                 else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
-            elif curr_sub["Default"]==False:
+            else:
                 if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
                 else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+"[F] "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
         else:
             if curr_sub["Default"]==True:
                 if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
                 else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+Style.BRIGHT+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.RESET_ALL+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
-            elif curr_sub["Default"]==False:
+            else:
                 if output_s=="": output_s += Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
                 else: output_s += ", "+Fore.YELLOW+ curr_sub["ID"] + Fore.RESET + " "+curr_sub["Language"]+" {"+curr_sub["Codec"]+"}"+Style.DIM+" ["+curr_sub["Size"]+"]"+Style.RESET_ALL
     
@@ -398,17 +398,21 @@ def print_mediainfo_dict(media_info_output,file_dict,filter_errors,filter_name,f
         else: # colored
             print(output_f)
         
-        # VIDEO OUTPUT
+        # VIDEO OUTPUT        
         if(no_colors_flag==True): # no colors
-            print(clear_colors(output_v))
+            if(output_v==""): print("VID: " +"-empty-")
+            else: print(clear_colors(output_v))
         else: # colored
-            print(Fore.CYAN+"VID: "+Fore.RESET + output_v)
+            if(output_v==""): print(Fore.CYAN+"VID: "+Fore.RESET+Style.DIM+"-empty-"+Style.RESET_ALL)
+            else: print(Fore.CYAN+"VID: "+Fore.RESET + output_v)
 
         # ENCODING OUTPUT
         if(no_colors_flag==True): # no colors
-            print(clear_colors(output_e))
+            if(output_e=="" or clear_colors(output_e)=="encode_method=? deblock=? ref=? me=? merange=? subme=? trellis=? bframes=?"): print("ENC: " +"-empty-")
+            else: print(clear_colors(output_e))
         else: # colored
-            print(Fore.CYAN+"ENC: "+Fore.RESET + output_e)
+            if(output_e=="" or clear_colors(output_e)=="encode_method=? deblock=? ref=? me=? merange=? subme=? trellis=? bframes=?"): print(Fore.CYAN+"ENC: "+Fore.RESET+Style.DIM+"-empty-"+Style.RESET_ALL)
+            else: print(Fore.CYAN+"ENC: "+Fore.RESET + output_e)
 
         # AUDIO OUTPUT
         if(no_colors_flag==True): # no colors
@@ -438,7 +442,7 @@ def parse_all_files(path,filter_errors,filter_name,filter_resolution,printfullna
     files,folders = get_files(path) #load files and folders
     files = sorted(files, key=str.lower) #sort files list
     folders = sorted(folders, key=str.lower) #sort folders list
-
+    print(files)
     for curr_file in files:
         # Parse info
         media_info_output = json.loads(MediaInfo.parse(path+curr_file,output="JSON"))
