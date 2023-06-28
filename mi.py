@@ -13,7 +13,8 @@ def get_files(path):
     all_files = []
     all_folders = []
     for curr_file in os.listdir(path):
-        all_files.append(curr_file)
+        if os.path.isfile(path+curr_file): 
+            all_files.append(curr_file)
         if os.path.isdir(path+curr_file):
             all_folders.append(curr_file)
     return all_files,all_folders
