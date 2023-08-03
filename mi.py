@@ -123,7 +123,7 @@ def get_data(path,media_info):
                         else:
                             v_rc_type=field.split("rc=")[1].strip()
             if("/" in v_rc_value): v_rc_value = v_rc_value.split("/")[0] # clean ZONED crf
-            if("InternetMediaType" in curr_track): v_codec = curr_track["InternetMediaType"].replace("video/","")
+            if("InternetMediaType" in curr_track): v_codec = curr_track["InternetMediaType"].replace("video/","").replace("MP4V-ES","XviD")
             if("StreamSize_String3" in curr_track): v_size = convert_b2_to_b10(curr_track["StreamSize_String3"].replace(" ",""))
 
             parsed_file["Video"] = {
