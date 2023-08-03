@@ -28,39 +28,9 @@ def convert_b2_to_b10(size_b2):
     return size_b2
 
 def minimize_channels(channels):
-    if channels == "C":                         return "1.0"
-    if channels == "Lt Rt":                     return "2.0"
-    if channels == "L R":                       return "2.0"
-    if channels == "L R LFE":                   return "2.1"
-    if channels == "L R C":                     return "3.0"
-    if channels == "C R L":                     return "3.0"
-    if channels == "C L R":                     return "3.0"
-    if channels == "L R Cb":                    return "3.0"
-    if channels == "L R C LFE":                 return "3.1"
-    if channels == "C L R LFE":                 return "3.1"
-    if channels == "L R Lb Rb":                 return "4.0"
-    if channels == "L R Ls Rs":                 return "4.0"
-    if channels == "C L R Cb":                  return "4.0"
-    if channels == "L R C Cb":                  return "4.0"
-    if channels == "L R C LFE Cb":              return "4.1"
-    if channels == "L R C Ls Rs":               return "5.0"
-    if channels == "C L R Ls Rs":               return "5.0"
-    if channels == "L R C LFE Lb Rb":           return "5.1"
-    if channels == "L R C LFE Ls Rs":           return "5.1"
-    if channels == "C L R Ls Rs LFE":           return "5.1"
-    if channels == "C L R Ls Rs Cb":            return "6.0"
-    if channels == "C L R Lb Rb Cb":            return "6.0"
-    if channels == "L R C Ls Rs Cb":            return "6.0"
-    if channels == "L R C Lb Rb Cb":            return "6.0"
-    if channels == "C L R Ls Rs Cb LFE":        return "6.1"
-    if channels == "C L R Lb Rb Cb LFE":        return "6.1"
-    if channels == "L R C Ls Rs Cb LFE":        return "6.1"
-    if channels == "L R C Lb Rb Cb LFE":        return "6.1"
-    if channels == "L R C LFE Ls Rs Lb Rb":     return "7.1"
-    if channels == "C L R LFE Lb Rb Lss Rss":   return "7.1"
-    if channels == "C L R Ls Rs Lw Rw LFE":     return "7.1"
-    if channels == "C L R LFE Ls Rs Lw Rw":     return "7.1"
-    return channels
+    lfe = int("LFE" in channels)
+    ch_value = str(len(channels.split(" ")) - lfe)+"."+str(lfe)
+    return ch_value
 
 def minimize_a_codec(codec):
     if codec == "Dolby TrueHD":                         return "TrueHD"
